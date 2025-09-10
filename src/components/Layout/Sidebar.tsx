@@ -1,0 +1,75 @@
+import React from 'react';
+import { 
+  BarChart3, 
+  Map, 
+  MessageCircle, 
+  Lightbulb, 
+  Briefcase, 
+  Home,
+  Bot,
+  Mic
+} from 'lucide-react';
+
+interface SidebarProps {
+  activeSection: string;
+  setActiveSection: (section: string) => void;
+}
+
+const menuItems = [
+  { id: 'dashboard', icon: Home, label: 'Dashboard' },
+  { id: 'skillGap', icon: BarChart3, label: 'Skill Gap Analyzer' },
+  { id: 'career', icon: Map, label: 'Career Explorer' },
+  { id: 'chat', icon: MessageCircle, label: 'AI Mentor' },
+  { id: 'projects', icon: Lightbulb, label: 'Projects & Hackathons' },
+  { id: 'jobs', icon: Briefcase, label: 'Job Matching' },
+  { id: 'interview', icon: Mic, label: 'AI Interview Assist' },
+];
+
+const Sidebar: React.FC<SidebarProps> = ({ activeSection, setActiveSection }) => {
+  return (
+    <div className="w-64 bg-white shadow-lg h-screen fixed left-0 top-0 z-10">
+      {/* Logo */}
+      <div className="p-6 border-b border-gray-200">
+        <div className="flex items-center space-x-3">
+          <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
+            <Bot className="w-6 h-6 text-white" />
+          </div>
+          <div>
+            <h1 className="text-xl font-bold text-gray-800">AI Career</h1>
+            <p className="text-sm text-gray-500">Advisor</p>
+          </div>
+        </div>
+      </div>
+
+      {/* Navigation */}
+      <nav className="p-4">
+        <ul className="space-y-2">
+          {menuItems.map((item) => {
+            const Icon = item.icon;
+            const isActive = activeSection === item.id;
+            
+            return (
+              <li key={item.id}>
+                <button
+                  onClick={() => setActiveSection(item.id)}
+                  className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg transition-all duration-200 ${
+                    isActive
+                      ? 'bg-blue-50 text-blue-600 shadow-sm'
+                      : 'text-gray-600 hover:bg-gray-50 hover:text-gray-800'
+                  }`}
+                >
+                  <Icon className={`w-5 h-5 ${isActive ? 'text-blue-600' : 'text-gray-400'}`} />
+                  <span className="font-medium">{item.label}</span>
+                </button>
+              </li>
+            );
+          })}
+        </ul>
+      </nav>
+
+      
+    </div>
+  );
+};
+
+export default Sidebar;
