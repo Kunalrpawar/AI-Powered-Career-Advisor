@@ -1,0 +1,34 @@
+[
+  {
+    "id": "career-planning-steps",
+    "title": "Career Planning Framework",
+    "text": "Career planning involves: 1) Self-assessment (interests, values, strengths), 2) Career exploration (roles, industries, day-in-life), 3) Skill gap analysis (map current skills vs. target role), 4) Learning plan (courses, projects, certifications with timelines), 5) Experience building (internships, volunteering, freelancing, hackathons), 6) Branding (resume, LinkedIn, portfolio), 7) Job search strategy (target companies, referrals, tailored applications), 8) Interview preparation (behavioral + technical), 9) Feedback loops (retrospect weekly, adjust plan)."
+  },
+  {
+    "id": "transition-non-tech-to-tech",
+    "title": "Transitioning into Tech",
+    "text": "For non-tech to tech transitions: pick a target role that leverages your domain (e.g., data analyst for finance, product for ops). Build foundational skills (Python/SQL for data; HTML/CSS/JS/React for frontend). Create 2-3 portfolio projects tied to your domain. Document learning in public. Seek internships, apprenticeships, or freelance gigs. Translate prior experience into impact statements relevant to the new role."
+  },
+  {
+    "id": "skills-by-role",
+    "title": "Skills by Common Roles",
+    "text": "Software Engineer: DS&A, OOP, version control, testing, system design basics. Data Analyst: SQL, Excel, Python (pandas), visualization (Tableau/Power BI), statistics. Product Manager: user research, roadmapping, prioritization, metrics, communication, stakeholder management. UI/UX: design principles, wireframing, prototyping, usability testing, Figma."
+  },
+  {
+    "id": "learning-resources",
+    "title": "Trusted Learning Resources",
+    "text": "DS&A: NeetCode, LeetCode patterns, CS50. Web: MDN, React docs, Frontend Mentor. Data: DataCamp, Kaggle, Practical SQL. Design: RefactoringUI, NN/g. System Design: System Design Primer, ByteByteGo. Resume/Interview: Cracking the Coding Interview, behavioral STAR."
+  },
+  {
+    "id": "interview-prep",
+    "title": "Interview Preparation",
+    "text": "Behavioral: stories using STAR for impact, conflict, leadership, failure, ambiguity. Technical: spaced repetition for core concepts, timed practice, mock interviews, explain trade-offs. Portfolio review: be ready to deep dive on design decisions, metrics, and lessons learned. Post-interview: send concise thank-you notes and log feedback."
+  },
+  {
+    "id": "roadmap-template",
+    "title": "Roadmap Template",
+    "text": "90-day plan: Weeks 1-2: foundations; Weeks 3-6: guided projects; Weeks 7-10: capstone project with metrics; Weeks 11-12: polish resume/LinkedIn/portfolio and apply to 10-15 roles/week; Ongoing: mock interviews and networking."
+  }
+]
+
+

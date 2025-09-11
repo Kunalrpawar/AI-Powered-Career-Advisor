@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Mic, MicOff, MessageSquare, Zap } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
+import { toHtmlFromMarkdownLite } from '../../utils/markdown';
 
 const InterviewAssist: React.FC = () => {
   const { token } = useAuth();
@@ -136,7 +137,7 @@ const InterviewAssist: React.FC = () => {
       {feedback && (
         <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
           <h3 className="text-xl font-semibold text-gray-800 mb-4">Feedback & Improvements</h3>
-          <pre className="whitespace-pre-wrap text-gray-700 text-sm">{feedback}</pre>
+          <div className="text-gray-700 text-sm" dangerouslySetInnerHTML={{ __html: toHtmlFromMarkdownLite(feedback) }} />
         </div>
       )}
     </div>

@@ -55,6 +55,7 @@ import careerRoutes from './routes/career.js';
 import chatRoutes from './routes/chat.js';
 import projectRoutes from './routes/projects.js';
 import jobRoutes from './routes/jobs.js';
+import collegeRoutes from './routes/colleges.js';
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -107,6 +108,7 @@ app.use('/api/career', careerRoutes);
 app.use('/api/chat', chatRoutes);
 app.use('/api/projects', projectRoutes);
 app.use('/api/jobs', jobRoutes);
+app.use('/api/colleges', collegeRoutes);
 
 // Health check
 app.get('/api/health', (req, res) => {

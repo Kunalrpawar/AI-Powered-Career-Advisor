@@ -24,6 +24,9 @@ const CollegesDirectory: React.FC = () => {
   const [query, setQuery] = useState('');
   const [list, setList] = useState<College[]>(mockColleges);
   const [coords, setCoords] = useState<{ lat: number; lng: number } | null>(null);
+  const [onlyNearby, setOnlyNearby] = useState(true);
+  const [radiusKm, setRadiusKm] = useState(20);
+  const [locError, setLocError] = useState<string | null>(null);
 
   useEffect(() => {
     const q = query.trim().toLowerCase();
@@ -38,14 +41,40 @@ const CollegesDirectory: React.FC = () => {
     );
   }, [query]);
 
-  useEffect(() => {
-    if (!('geolocation' in navigator)) return;
+  const requestLocation = () => {
+    setLocError(null);
+    if (!('geolocation' in navigator)) {
+      setLocError('Geolocation not supported in this browser.');
+      return;
+    }
     navigator.geolocation.getCurrentPosition(
       (pos) => setCoords({ lat: pos.coords.latitude, lng: pos.coords.longitude }),
-      () => setCoords(null),
-      { enableHighAccuracy: false, maximumAge: 60000, timeout: 8000 }
+      (err) => setLocError(err?.message || 'Location permission denied'),
+      { enableHighAccuracy: true, maximumAge: 60000, timeout: 10000 }
     );
-  }, []);
+  };
+
+  useEffect(() => {
+    async function fetchReal() {
+      if (!coords) return;
+      try {
+        const resp = await fetch('/api/colleges/nearby', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ lat: coords.lat, lng: coords.lng, radiusKm })
+        });
+        if (!resp.ok) throw new Error('Failed to load colleges');
+        const json = await resp.json();
+        if (Array.isArray(json?.colleges) && json.colleges.length > 0) {
+          setList(json.colleges);
+        }
+      } catch (e: any) {
+        // keep mock list on failure, show soft message
+        setLocError(e?.message || 'Could not load real colleges');
+      }
+    }
+    fetchReal();
+  }, [coords, radiusKm]);
 
   const withDistance = useMemo(() => {
     if (!coords) return list.map((c) => ({ college: c, distanceKm: null as number | null }));
@@ -58,31 +87,50 @@ const CollegesDirectory: React.FC = () => {
       const d = 2 * R * Math.asin(Math.sqrt(x));
       return d;
     };
-    return list.map((c) => ({
+    let items = list.map((c) => ({
       college: c,
       distanceKm: c.lat && c.lng ? Math.round(haversine(coords.lat, coords.lng, c.lat, c.lng) * 10) / 10 : null,
-    })).sort((a, b) => {
+    }));
+    if (onlyNearby) {
+      items = items.filter((it) => it.distanceKm != null && it.distanceKm <= radiusKm);
+    }
+    return items.sort((a, b) => {
       if (a.distanceKm == null) return 1;
       if (b.distanceKm == null) return -1;
       return a.distanceKm - b.distanceKm;
     });
-  }, [list, coords]);
+  }, [list, coords, onlyNearby, radiusKm]);
 
   return (
     <div className="p-6">
       <div className="max-w-5xl mx-auto">
         <h1 className="text-2xl font-bold text-gray-900 mb-2">Nearby Government Colleges</h1>
-        <p className="text-gray-600 mb-4">Search by name, city, or state. If you allow location, you'll see distance.</p>
-        <div className="mb-6 flex items-center gap-3">
+        <p className="text-gray-600 mb-4">Search by name, city, or state. Allow location to filter nearby colleges.</p>
+        <div className="mb-4 flex items-center gap-3">
           <input
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Search colleges..."
             className="w-full md:w-96 border border-gray-200 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-100 focus:border-blue-500 outline-none"
           />
+          <button onClick={requestLocation} className="px-3 py-2 text-sm rounded-lg border border-gray-200 hover:bg-gray-50">{coords ? 'Refresh location' : 'Use my location'}</button>
+        </div>
+        {locError && <div className="mb-3 text-sm text-red-600">{locError}</div>}
+        <div className="mb-6 flex items-center gap-4">
+          <label className="flex items-center gap-2 text-sm text-gray-700">
+            <input type="checkbox" checked={onlyNearby} onChange={(e) => setOnlyNearby(e.target.checked)} />
+            Show only within
+          </label>
+          <div className="flex items-center gap-2 text-sm">
+            <input type="range" min={5} max={50} step={5} value={radiusKm} onChange={(e) => setRadiusKm(Number(e.target.value))} />
+            <span className="text-gray-700 font-medium">{radiusKm} km</span>
+          </div>
           <span className="text-xs text-gray-500">{coords ? 'Location enabled' : 'Location off'}</span>
         </div>
         <div className="grid md:grid-cols-2 gap-6">
+          {withDistance.length === 0 && (
+            <div className="md:col-span-2 text-sm text-gray-600">{coords ? 'No colleges found within the selected radius.' : 'Enable location to see nearby colleges within 20km.'}</div>
+          )}
           {withDistance.map(({ college: c, distanceKm }) => (
             <div key={c.id} className="bg-white rounded-xl border border-gray-200 p-5">
               <div className="flex items-start justify-between">

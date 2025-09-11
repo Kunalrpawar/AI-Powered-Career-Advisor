@@ -21,22 +21,286 @@ const ProjectGenerator: React.FC = () => {
     { value: 'advanced', label: 'Advanced', color: 'red', description: '1-3 months' },
   ];
 
+  // Curated ideas per interest and difficulty
+  const curated: Record<string, { beginner: string[]; intermediate: string[]; advanced: string[] }> = {
+    'Web Development': {
+      beginner: [
+        'Personal portfolio website',
+        'Blog platform with Markdown support',
+        'Weather app using an external API',
+        'To-do list app with local storage',
+        'Basic e-commerce product catalog (static)'
+      ],
+      intermediate: [
+        'Event booking system with payments (Razorpay/Stripe)',
+        'Job board with filtering/search',
+        'Recipe sharing platform with user login',
+        'Forum/community site with upvotes',
+        'URL shortener service'
+      ],
+      advanced: [
+        'Real-time chat app with WebSockets',
+        'SaaS invoicing tool with subscription billing',
+        'Multi-vendor e-commerce marketplace',
+        'Learning Management System (LMS)',
+        'Headless CMS with API + dashboard'
+      ]
+    },
+    'Mobile Apps': {
+      beginner: [
+        'Notes-taking app (offline)',
+        'BMI calculator app',
+        'Expense tracker',
+        'Flashcards for study',
+        'Daily habits tracker'
+      ],
+      intermediate: [
+        'Fitness app with workout plans',
+        'Meditation & breathing app with sound',
+        'Location-based reminder app',
+        'Recipe app with meal planner',
+        'Travel itinerary planner'
+      ],
+      advanced: [
+        'On-demand food delivery app clone',
+        'Ride-sharing app (Uber-like) with maps',
+        'Social media mini-clone (posts, likes, chat)',
+        'Healthcare consultation app (video + chat)',
+        'AR-based interior design app'
+      ]
+    },
+    'AI/Machine Learning': {
+      beginner: [
+        'House price prediction (linear regression)',
+        'Spam vs. not spam email classifier',
+        'Movie recommendation system (collaborative filtering)',
+        'Handwritten digit recognition (MNIST)',
+        'Sentiment analysis of tweets'
+      ],
+      intermediate: [
+        'Chatbot for FAQs using NLP',
+        'Fake news detection with ML',
+        'Image classifier (cats vs dogs)',
+        'Resume screening tool',
+        'Music genre classifier'
+      ],
+      advanced: [
+        'AI interviewer with speech-to-text + sentiment analysis',
+        'Stock price prediction using deep learning',
+        'Face recognition attendance system',
+        'Generative AI image style transfer',
+        'Personalized voice cloning'
+      ]
+    },
+    'Data Science': {
+      beginner: [
+        'Sales dashboard using Excel/Power BI',
+        'Netflix dataset analysis',
+        'COVID-19 data visualization',
+        'Stock trends visualization with Matplotlib',
+        'Weather pattern analysis'
+      ],
+      intermediate: [
+        'Customer segmentation with clustering',
+        'Predict student exam performance',
+        'Airbnb data analysis',
+        'Crime rate analysis by city',
+        'Social media engagement analysis'
+      ],
+      advanced: [
+        'Predictive healthcare analytics',
+        'Credit card fraud detection',
+        'Real-time traffic prediction',
+        'Recommendation engine (hybrid)',
+        'Retail demand forecasting'
+      ]
+    },
+    'Cybersecurity': {
+      beginner: [
+        'Password strength checker',
+        'Secure file encryption/decryption tool',
+        'Port scanner',
+        'Keylogger detector',
+        'Basic firewall rules setup'
+      ],
+      intermediate: [
+        'Web vulnerability scanner (SQLi, XSS)',
+        'Secure login system with JWT',
+        'Phishing website detector',
+        'Network packet sniffer',
+        'Two-factor authentication system'
+      ],
+      advanced: [
+        'Blockchain-based secure voting system',
+        'Intrusion detection system (IDS)',
+        'Malware sandbox analysis tool',
+        'Ransomware simulation + defense model',
+        'AI-driven anomaly detection in logs'
+      ]
+    },
+    'Game Development': {
+      beginner: [
+        'Tic-tac-toe',
+        'Snake game',
+        'Flappy bird clone',
+        'Memory card game',
+        'Hangman'
+      ],
+      intermediate: [
+        'Platformer game (like Mario)',
+        'Chess with AI opponent',
+        'Car racing game',
+        'Tower defense game',
+        '3D maze explorer'
+      ],
+      advanced: [
+        'MMORPG prototype',
+        'Multiplayer FPS with lobby',
+        'VR escape room',
+        'AI-driven NPC interaction system',
+        'Physics-based puzzle game'
+      ]
+    },
+    'Blockchain': {
+      beginner: [
+        'Cryptocurrency wallet UI mockup',
+        'Blockchain visualizer (learn how blocks link)',
+        'Simple smart contract for Hello World',
+        'Token faucet (testnet)',
+        'Basic NFT metadata generator'
+      ],
+      intermediate: [
+        'Decentralized voting app',
+        'Supply chain tracking with blockchain',
+        'Crowdfunding DApp (Ethereum)',
+        'NFT marketplace prototype',
+        'Decentralized file storage system'
+      ],
+      advanced: [
+        'Layer-2 payment channel implementation',
+        'DAO (Decentralized Autonomous Organization)',
+        'Blockchain-based healthcare record sharing',
+        'Cross-chain token bridge',
+        'Blockchain identity verification system'
+      ]
+    },
+    'IoT': {
+      beginner: [
+        'Smart LED control with Arduino',
+        'Temperature + humidity monitoring',
+        'Motion detector alarm',
+        'Smart door lock with RFID',
+        'Plant watering system'
+      ],
+      intermediate: [
+        'IoT home automation dashboard',
+        'Smart parking system',
+        'Health monitoring wearable prototype',
+        'Smart garbage bin (alerts when full)',
+        'Air quality monitoring'
+      ],
+      advanced: [
+        'Smart city traffic light system',
+        'Industrial IoT predictive maintenance',
+        'Drone-based delivery system',
+        'IoT-based disaster alert system',
+        'Energy consumption optimization in smart homes'
+      ]
+    },
+    'DevOps': {
+      beginner: [
+        'Dockerize a simple app',
+        'Basic CI/CD with GitHub Actions',
+        'Deploy static website on AWS/GCP/Azure',
+        'Monitor app logs with Prometheus + Grafana',
+        'Automated backup script'
+      ],
+      intermediate: [
+        'Kubernetes cluster setup for microservices',
+        'Terraform project for cloud infrastructure',
+        'Jenkins pipeline for testing & deployment',
+        'Serverless deployment with AWS Lambda',
+        'Load balancer setup with Nginx'
+      ],
+      advanced: [
+        'Chaos engineering experiment setup',
+        'Multi-cloud deployment strategy',
+        'Automated security scans in CI/CD',
+        'GitOps with ArgoCD',
+        'Scalable event-driven architecture with Kafka'
+      ]
+    },
+    'UI/UX Design': {
+      beginner: [
+        'Redesign a login/signup page',
+        'Portfolio website with animations',
+        'Mobile app splash + onboarding screens',
+        'E-commerce product page UI',
+        'Landing page for a SaaS product'
+      ],
+      intermediate: [
+        'Dashboard UI kit',
+        'Design system + component library',
+        'Wireframes for a social media app',
+        'Dark mode toggle + accessibility improvements',
+        'Interactive prototype in Figma/Adobe XD'
+      ],
+      advanced: [
+        'AR/VR immersive UI experience',
+        'AI-driven personalized UI themes',
+        'UX research + case study (real users)',
+        'Advanced micro-interactions for mobile',
+        'Full redesign of an existing product (case study)'
+      ]
+    }
+  };
+
+  const estimatedByLevel: Record<string, string> = {
+    beginner: '1-2 weeks',
+    intermediate: '2-4 weeks',
+    advanced: '1-3 months'
+  };
+
   const generateProjects = async () => {
+    if (!interest || !difficulty) {
+      setError('Please select an interest area and difficulty level.');
+      return;
+    }
     setIsGenerating(true);
-    
     try {
       setError(null);
+      const group = curated[interest];
+      if (group && (group as any)[difficulty]) {
+        const titles: string[] = (group as any)[difficulty];
+        const normalized = titles.map((title) => ({
+          title,
+          difficulty,
+          description: 'Curated idea for your selected area and difficulty.',
+          technologies: [],
+          estimatedTime: estimatedByLevel[difficulty] || '2-4 weeks',
+          learningOutcomes: []
+        }));
+        setProjects(normalized);
+        return;
+      }
       const response = await fetch('/api/projects/generate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', ...(token ? { Authorization: `Bearer ${token}` } : {}) },
         body: JSON.stringify({ interest, difficulty }),
       });
 
+      if (!response.ok) {
+        const text = await response.text();
+        throw new Error(text || 'Failed to generate projects');
+      }
+
       const result = await response.json();
-      
-      // Handle demo or real response
-      if (result.isDemoMode) {
-        setProjects([
+
+      // Normalize projects array
+      let list = Array.isArray(result?.projects) ? result.projects : [];
+      if (!Array.isArray(list) || list.length === 0) {
+        // As a safety net, produce minimal demos client-side
+        list = [
           {
             title: 'Personal Portfolio Website',
             difficulty: 'beginner',
@@ -150,10 +414,10 @@ io.on('connection', (socket) => {
 
 server.listen(5000);`
           }
-        ]);
-      } else {
-        setProjects(result.projects);
+        ];
       }
+
+      setProjects(list);
     } catch (error: any) {
       console.error('Project generation failed:', error);
       setError(error?.message || 'Failed to generate projects');

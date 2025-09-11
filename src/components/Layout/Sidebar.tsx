@@ -2,7 +2,6 @@ import React from 'react';
 import { 
   BarChart3, 
   Map, 
-  MessageCircle, 
   Lightbulb, 
   Briefcase, 
   Home,
@@ -24,10 +23,10 @@ const menuItems = [
   { id: 'dashboard', icon: Home, label: 'Dashboard' },
   { id: 'skillGap', icon: BarChart3, label: 'Skill Gap Analyzer' },
   { id: 'career', icon: Map, label: 'Career Explorer' },
-  { id: 'chat', icon: MessageCircle, label: 'AI Mentor' },
+  // { id: 'chat', icon: MessageCircle, label: 'AI Mentor' },
   { id: 'projects', icon: Lightbulb, label: 'Projects & Hackathons' },
   { id: 'jobs', icon: Briefcase, label: 'Job Matching' },
-  { id: 'interview', icon: Mic, label: 'AI Interview Assist' },
+  { id: 'interview', icon: Mic, label: 'AI Assistance' },
   { id: 'quiz', icon: ListChecks, label: 'Aptitude & Interest Quiz' },
   { id: 'mapping', icon: School, label: 'Course → Career Mapping' },
   { id: 'colleges', icon: Map, label: 'Government Colleges' },
@@ -39,7 +38,7 @@ const menuItems = [
 
 const Sidebar: React.FC<SidebarProps> = ({ activeSection, setActiveSection }) => {
   return (
-    <div className="w-64 bg-white shadow-lg h-screen fixed left-0 top-0 z-10 flex flex-col">
+    <div className="w-64 bg-white/90 backdrop-blur supports-[backdrop-filter]:bg-white/70 shadow-lg h-screen fixed left-0 top-0 z-10 flex flex-col">
       {/* Logo */}
       <div className="p-6 border-b border-gray-200 flex-shrink-0">
         <div className="flex items-center space-x-3">
@@ -47,8 +46,8 @@ const Sidebar: React.FC<SidebarProps> = ({ activeSection, setActiveSection }) =>
             <Bot className="w-6 h-6 text-white" />
           </div>
           <div>
-            <h1 className="text-xl font-bold text-gray-800">AI Career</h1>
-            <p className="text-sm text-gray-500">Advisor</p>
+            <h1 className="text-xl font-extrabold text-gray-900 tracking-tight">AI Career</h1>
+            <p className="text-xs text-gray-500">Advisor</p>
           </div>
         </div>
       </div>
@@ -64,13 +63,13 @@ const Sidebar: React.FC<SidebarProps> = ({ activeSection, setActiveSection }) =>
               <li key={item.id}>
                 <button
                   onClick={() => setActiveSection(item.id)}
-                  className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg transition-all duration-200 ${
+                  className={`w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 ${
                     isActive
-                      ? 'bg-blue-50 text-blue-600 shadow-sm'
-                      : 'text-gray-600 hover:bg-gray-50 hover:text-gray-800'
+                      ? 'bg-indigo-50 text-indigo-700 shadow-sm border border-indigo-100'
+                      : 'text-gray-700 hover:bg-gray-50 hover:text-gray-900 border border-transparent'
                   }`}
                 >
-                  <Icon className={`w-5 h-5 ${isActive ? 'text-blue-600' : 'text-gray-400'}`} />
+                  <Icon className={`w-5 h-5 ${isActive ? 'text-indigo-700' : 'text-gray-400'}`} />
                   <span className="font-medium">{item.label}</span>
                 </button>
               </li>

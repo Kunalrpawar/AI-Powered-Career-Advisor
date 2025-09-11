@@ -8,7 +8,9 @@ import AIMentorChat from './components/Features/AIMentorChat';
 import ProjectGenerator from './components/Features/ProjectGenerator';
 import JobMatcher from './components/Features/JobMatcher';
 import { AuthProvider, useAuth } from './context/AuthContext';
+import { ThemeProvider } from './context/ThemeContext';
 import InterviewAssist from './components/Features/InterviewAssist';
+import AIAssistance from './components/Features/AIAssistance';
 import Login from './components/Auth/Login';
 import Register from './components/Auth/Register';
 import AptitudeQuiz from './components/Features/AptitudeQuiz';
@@ -81,7 +83,7 @@ function AppContent() {
       case 'jobs':
         return <JobMatcher />;
       case 'interview':
-        return <InterviewAssist />;
+        return <AIAssistance />;
       case 'quiz':
         return <AptitudeQuiz />;
       case 'mapping':
@@ -114,9 +116,11 @@ function AppContent() {
 
 function App() {
   return (
-    <AuthProvider>
-      <AppContent />
-    </AuthProvider>
+    <ThemeProvider>
+      <AuthProvider>
+        <AppContent />
+      </AuthProvider>
+    </ThemeProvider>
   );
 }
 

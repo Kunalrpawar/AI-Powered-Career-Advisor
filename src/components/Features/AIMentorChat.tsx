@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Send, Bot, User, MessageCircle } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
+import { toHtmlFromMarkdownLite } from '../../utils/markdown';
 
 interface Message {
   id: string;
@@ -133,7 +134,11 @@ const AIMentorChat: React.FC = () => {
                   ? 'bg-blue-600 text-white'
                   : 'bg-gray-100 text-gray-800'
               }`}>
-                <p className="text-sm whitespace-pre-wrap">{message.content}</p>
+                {message.type === 'ai' ? (
+                  <p className="text-sm" dangerouslySetInnerHTML={{ __html: toHtmlFromMarkdownLite(message.content) }} />
+                ) : (
+                  <p className="text-sm whitespace-pre-wrap">{message.content}</p>
+                )}
                 <p className={`text-xs mt-2 ${
                   message.type === 'user' ? 'text-blue-100' : 'text-gray-500'
                 }`}>
