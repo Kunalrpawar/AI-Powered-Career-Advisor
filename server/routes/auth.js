@@ -16,7 +16,8 @@ router.get('/ping', (req, res) => {
 // Register
 router.post('/register', async (req, res) => {
   try {
-    const { name, email, password } = req.body;
+    let { name, email, password } = req.body;
+    if (typeof email === 'string') email = email.trim().toLowerCase();
     if (!name || !email || !password) {
       return res.status(400).json({ error: 'Name, email, and password are required' });
     }
@@ -46,7 +47,8 @@ router.post('/register', async (req, res) => {
 // Login
 router.post('/login', async (req, res) => {
   try {
-    const { email, password } = req.body;
+    let { email, password } = req.body;
+    if (typeof email === 'string') email = email.trim().toLowerCase();
     if (!email || !password) {
       return res.status(400).json({ error: 'Email and password are required' });
     }

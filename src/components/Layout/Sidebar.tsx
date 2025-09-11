@@ -7,7 +7,12 @@ import {
   Briefcase, 
   Home,
   Bot,
-  Mic
+  Mic,
+  ListChecks,
+  School,
+  CalendarDays,
+  UserCircle2,
+  Sparkles
 } from 'lucide-react';
 
 interface SidebarProps {
@@ -23,13 +28,20 @@ const menuItems = [
   { id: 'projects', icon: Lightbulb, label: 'Projects & Hackathons' },
   { id: 'jobs', icon: Briefcase, label: 'Job Matching' },
   { id: 'interview', icon: Mic, label: 'AI Interview Assist' },
+  { id: 'quiz', icon: ListChecks, label: 'Aptitude & Interest Quiz' },
+  { id: 'mapping', icon: School, label: 'Course → Career Mapping' },
+  { id: 'colleges', icon: Map, label: 'Government Colleges' },
+  { id: 'timeline', icon: CalendarDays, label: 'Timeline Tracker' },
+  { id: 'profile', icon: UserCircle2, label: 'Profile' },
+  { id: 'recommendations', icon: Sparkles, label: 'Recommendations' },
+  { id: 'mentor', icon: UserCircle2, label: 'Mentor Portal' },
 ];
 
 const Sidebar: React.FC<SidebarProps> = ({ activeSection, setActiveSection }) => {
   return (
-    <div className="w-64 bg-white shadow-lg h-screen fixed left-0 top-0 z-10">
+    <div className="w-64 bg-white shadow-lg h-screen fixed left-0 top-0 z-10 flex flex-col">
       {/* Logo */}
-      <div className="p-6 border-b border-gray-200">
+      <div className="p-6 border-b border-gray-200 flex-shrink-0">
         <div className="flex items-center space-x-3">
           <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
             <Bot className="w-6 h-6 text-white" />
@@ -42,7 +54,7 @@ const Sidebar: React.FC<SidebarProps> = ({ activeSection, setActiveSection }) =>
       </div>
 
       {/* Navigation */}
-      <nav className="p-4">
+      <nav className="p-4 overflow-y-auto min-h-0 flex-1">
         <ul className="space-y-2">
           {menuItems.map((item) => {
             const Icon = item.icon;

@@ -13,29 +13,34 @@ const Login: React.FC<{ onSwitchToRegister: () => void }> = ({ onSwitchToRegiste
     setError(null);
     setLoading(true);
     try {
-      await login(email, password);
+      await login(email.trim().toLowerCase(), password);
     } catch (err) {
-      setError('Invalid credentials');
+      const message = err instanceof Error ? err.message : 'Login failed';
+      setError(message);
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4">
-      <form onSubmit={onSubmit} className="bg-white w-full max-w-sm rounded-xl shadow p-6 space-y-4">
-        <h2 className="text-2xl font-semibold text-gray-800">Login</h2>
-        {error && <div className="text-red-600 text-sm">{error}</div>}
+    <div className="flex items-center justify-center p-4">
+      <form onSubmit={onSubmit} className="bg-white/80 backdrop-blur w-full max-w-md rounded-2xl shadow-xl border border-gray-100 p-8 space-y-5">
+        <div className="text-center">
+          <div className="mx-auto w-12 h-12 rounded-xl bg-gradient-to-br from-blue-600 to-purple-600 flex items-center justify-center text-white font-bold">HG</div>
+          <h2 className="mt-3 text-2xl font-bold text-gray-900">Welcome back</h2>
+          <p className="text-sm text-gray-600">Sign in to continue to your dashboard</p>
+        </div>
+        {error && <div className="text-red-600 text-sm bg-red-50 border border-red-200 px-3 py-2 rounded-lg">{error}</div>}
         <div>
-          <label className="block text-sm text-gray-600 mb-1">Email</label>
-          <input value={email} onChange={(e) => setEmail(e.target.value)} type="email" className="w-full border rounded-lg px-3 py-2" required />
+          <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+          <input value={email} onChange={(e) => setEmail(e.target.value)} type="email" className="w-full border border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-100 rounded-lg px-3 py-2 outline-none transition" placeholder="you@example.com" required />
         </div>
         <div>
-          <label className="block text-sm text-gray-600 mb-1">Password</label>
-          <input value={password} onChange={(e) => setPassword(e.target.value)} type="password" className="w-full border rounded-lg px-3 py-2" required />
+          <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
+          <input value={password} onChange={(e) => setPassword(e.target.value)} type="password" className="w-full border border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-100 rounded-lg px-3 py-2 outline-none transition" placeholder="••••••••" required />
         </div>
-        <button disabled={loading} type="submit" className="w-full bg-blue-600 text-white py-2 rounded-lg">{loading ? 'Logging in...' : 'Login'}</button>
-        <p className="text-sm text-gray-600">No account? <button type="button" className="text-blue-600" onClick={onSwitchToRegister}>Register</button></p>
+        <button disabled={loading} type="submit" className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white py-2.5 rounded-lg font-medium transition disabled:opacity-60">{loading ? 'Signing in...' : 'Sign in'}</button>
+        <p className="text-sm text-gray-600 text-center">No account? <button type="button" className="text-blue-600 hover:text-blue-700 font-medium" onClick={onSwitchToRegister}>Create one</button></p>
       </form>
     </div>
   );
