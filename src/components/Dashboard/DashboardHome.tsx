@@ -74,7 +74,7 @@ const DashboardHome: React.FC<DashboardHomeProps> = ({ setActiveSection }) => {
     <div className="p-6 space-y-6">
       {/* Welcome Section */}
       <div className="bg-gradient-to-r from-blue-600 via-purple-600 to-blue-800 rounded-xl p-8 text-white">
-        <h1 className="text-3xl font-bold mb-2">Welcome to AI Career Advisor</h1>
+        <h1 className="text-3xl font-bold mb-2">Welcome to Career Advisor for Jammu Kashmir Students</h1>
         <p className="text-blue-100 text-lg mb-6">
           Your personal AI-powered career guidance platform
         </p>
