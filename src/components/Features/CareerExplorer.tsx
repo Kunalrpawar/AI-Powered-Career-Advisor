@@ -9,6 +9,8 @@ const CareerExplorer: React.FC = () => {
   const [isExploring, setIsExploring] = useState(false);
   const [expandedPath, setExpandedPath] = useState<number | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [jobs, setJobs] = useState<any[]>([]);
+  const [isLoadingJobs, setIsLoadingJobs] = useState(false);
   const { token } = useAuth();
 
   const predefinedInterests = [
@@ -76,11 +78,29 @@ const CareerExplorer: React.FC = () => {
           }
         ]);
       }
+      // Reset jobs when exploring anew
+      setJobs([]);
     } catch (error: any) {
       console.error('Career exploration failed:', error);
       setError(error?.message || 'Failed to explore careers');
     } finally {
       setIsExploring(false);
+    }
+  };
+
+  const fetchJobs = async () => {
+    try {
+      setIsLoadingJobs(true);
+      setError(null);
+      const q = [interests, currentSkills].filter(Boolean).join(' ').trim();
+      const resp = await fetch(`/api/career/jobs?q=${encodeURIComponent(q)}&country=IN`);
+      if (!resp.ok) throw new Error('Failed to fetch jobs');
+      const json = await resp.json();
+      if (Array.isArray(json?.jobs)) setJobs(json.jobs);
+    } catch (e: any) {
+      setError(e?.message || 'Failed to fetch jobs');
+    } finally {
+      setIsLoadingJobs(false);
     }
   };
 
@@ -166,6 +186,15 @@ const CareerExplorer: React.FC = () => {
             </>
           )}
         </button>
+        <div className="mt-3">
+          <button
+            onClick={fetchJobs}
+            disabled={isLoadingJobs || !interests.trim()}
+            className="w-full bg-white border border-green-200 text-green-700 py-3 rounded-lg hover:bg-green-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          >
+            {isLoadingJobs ? 'Fetching real jobs…' : 'Find real jobs based on my interests & skills'}
+          </button>
+        </div>
       </div>
 
       {/* Career Path Results */}
@@ -257,6 +286,26 @@ const CareerExplorer: React.FC = () => {
               )}
             </div>
           ))}
+        </div>
+      )}
+
+      {/* Real Jobs */}
+      {jobs.length > 0 && (
+        <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+          <h3 className="text-xl font-semibold text-gray-800 mb-4">Real Jobs</h3>
+          <div className="space-y-3">
+            {jobs.map((j) => (
+              <a key={j.id} href={j.url} target="_blank" rel="noreferrer" className="block p-3 rounded-lg border border-gray-200 hover:bg-gray-50">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="font-medium text-gray-900">{j.title}</p>
+                    <p className="text-sm text-gray-600">{j.company} • {j.location || 'Remote'}</p>
+                  </div>
+                  <span className="text-xs text-gray-500">{j.publishedAt ? new Date(j.publishedAt).toLocaleDateString() : ''}</span>
+                </div>
+              </a>
+            ))}
+          </div>
         </div>
       )}
     </div>
