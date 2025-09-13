@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import Sidebar from './components/Layout/Sidebar';
 import Header from './components/Layout/Header';
+import HomePage from './components/Features/HomePage';
 import DashboardHome from './components/Dashboard/DashboardHome';
-import SkillGapAnalyzer from './components/Features/SkillGapAnalyzer';
-import CareerExplorer from './components/Features/CareerExplorer';
+import SkillGapJobMatcher from './components/Features/SkillGapJobMatcher';
 import AIMentorChat from './components/Features/AIMentorChat';
 import ProjectGenerator from './components/Features/ProjectGenerator';
 import JobMatcher from './components/Features/JobMatcher';
@@ -70,12 +70,12 @@ function AppContent() {
 
   const renderActiveSection = () => {
     switch (activeSection) {
+      case 'home':
+        return <HomePage />;
       case 'dashboard':
         return <DashboardHome setActiveSection={setActiveSection} />;
       case 'skillGap':
-        return <SkillGapAnalyzer />;
-      case 'career':
-        return <CareerExplorer />;
+        return <SkillGapJobMatcher />;
       case 'chat':
         return <AIMentorChat />;
       case 'projects':
@@ -99,7 +99,7 @@ function AppContent() {
       case 'mentor':
         return <MentorPortal />;
       default:
-        return <DashboardHome setActiveSection={setActiveSection} />;
+        return <HomePage />;
     }
   };
 

@@ -1,10 +1,14 @@
 import React, { useState } from 'react';
-import { Map, Compass, TrendingUp, DollarSign, Clock, ChevronDown, ChevronUp } from 'lucide-react';
+import { Map, Compass, TrendingUp, DollarSign, Clock, ChevronDown, ChevronUp, Upload, FileText, X, CheckCircle } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 
 const CareerExplorer: React.FC = () => {
+  const [inputMode, setInputMode] = useState<'manual' | 'resume'>('manual');
   const [interests, setInterests] = useState('');
   const [currentSkills, setCurrentSkills] = useState('');
+  const [extractedSkills, setExtractedSkills] = useState<string[]>([]);
+  const [file, setFile] = useState<File | null>(null);
+  const [isProcessingResume, setIsProcessingResume] = useState(false);
   const [careerPaths, setCareerPaths] = useState<any[]>([]);
   const [isExploring, setIsExploring] = useState(false);
   const [expandedPath, setExpandedPath] = useState<number | null>(null);
@@ -17,6 +21,58 @@ const CareerExplorer: React.FC = () => {
     'Web Development', 'AI/ML', 'Cybersecurity', 'Mobile Development',
     'Data Science', 'Cloud Computing', 'DevOps', 'UI/UX Design'
   ];
+
+  const handleResumeUpload = async () => {
+    if (!file) return;
+    
+    setIsProcessingResume(true);
+    setError(null);
+    
+    try {
+      const formData = new FormData();
+      formData.append('resume', file);
+      
+      const response = await fetch('/api/skill-gap/analyze', {
+        method: 'POST',
+        headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+        body: formData,
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to process resume');
+      }
+
+      const result = await response.json();
+      
+      // Extract skills from the analysis
+      if (result.analysis && result.analysis.skillBreakdown) {
+        const allSkills: string[] = [];
+        Object.values(result.analysis.skillBreakdown).forEach((category: any) => {
+          if (category.skills) {
+            allSkills.push(...category.skills);
+          }
+        });
+        setExtractedSkills(allSkills);
+        setCurrentSkills(allSkills.join(', '));
+      }
+      
+      // Set interests based on skills
+      if (result.analysis && result.analysis.skillBreakdown) {
+        const interestsFromSkills: string[] = [];
+        if (result.analysis.skillBreakdown.frontend) interestsFromSkills.push('Web Development');
+        if (result.analysis.skillBreakdown.mobile) interestsFromSkills.push('Mobile Development');
+        if (result.analysis.skillBreakdown.dataScience) interestsFromSkills.push('Data Science');
+        if (result.analysis.skillBreakdown.devops) interestsFromSkills.push('DevOps');
+        setInterests(interestsFromSkills.join(', '));
+      }
+      
+    } catch (error: any) {
+      console.error('Resume processing failed:', error);
+      setError(error?.message || 'Failed to process resume');
+    } finally {
+      setIsProcessingResume(false);
+    }
+  };
 
   const handleExplore = async () => {
     setIsExploring(true);
@@ -92,7 +148,11 @@ const CareerExplorer: React.FC = () => {
     try {
       setIsLoadingJobs(true);
       setError(null);
-      const q = [interests, currentSkills].filter(Boolean).join(' ').trim();
+      
+      // Use extracted skills if available, otherwise use manually entered skills
+      const skillsToUse = extractedSkills.length > 0 ? extractedSkills.join(', ') : currentSkills;
+      const q = [interests, skillsToUse].filter(Boolean).join(' ').trim();
+      
       const resp = await fetch(`/api/career/jobs?q=${encodeURIComponent(q)}&country=IN`);
       if (!resp.ok) throw new Error('Failed to fetch jobs');
       const json = await resp.json();
@@ -113,6 +173,20 @@ const CareerExplorer: React.FC = () => {
     }
   };
 
+  const handleModeChange = (mode: 'manual' | 'resume') => {
+    setInputMode(mode);
+    // Clear form data when switching modes
+    if (mode === 'manual') {
+      setExtractedSkills([]);
+      setFile(null);
+    } else {
+      setCurrentSkills('');
+    }
+    setCareerPaths([]);
+    setJobs([]);
+    setError(null);
+  };
+
   return (
     <div className="p-6 space-y-6">
       <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6">
@@ -125,6 +199,103 @@ const CareerExplorer: React.FC = () => {
             <p className="text-gray-500 dark:text-gray-400">Discover career opportunities that match your interests and skills</p>
           </div>
         </div>
+
+        {/* Input Mode Toggle */}
+        <div className="flex space-x-4 mb-6">
+          <button
+            onClick={() => handleModeChange('manual')}
+            className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition-colors ${
+              inputMode === 'manual' 
+                ? 'bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400 border-2 border-green-200 dark:border-green-800' 
+                : 'bg-gray-50 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-600'
+            }`}
+          >
+            <FileText className="w-4 h-4" />
+            <span>Manual Input</span>
+          </button>
+          <button
+            onClick={() => handleModeChange('resume')}
+            className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition-colors ${
+              inputMode === 'resume' 
+                ? 'bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400 border-2 border-green-200 dark:border-green-800' 
+                : 'bg-gray-50 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-600'
+            }`}
+          >
+            <Upload className="w-4 h-4" />
+            <span>Upload Resume</span>
+          </button>
+        </div>
+
+        {/* Resume Upload Section */}
+        {inputMode === 'resume' && (
+          <div className="mb-6">
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">Upload Your Resume</label>
+            <div className="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-8 text-center hover:border-green-400 dark:hover:border-green-500 transition-colors">
+              <Upload className="w-12 h-12 text-gray-400 dark:text-gray-500 mx-auto mb-4" />
+              <h3 className="text-lg font-medium text-gray-700 dark:text-gray-300 mb-2">Upload your resume</h3>
+              <p className="text-gray-500 dark:text-gray-400 mb-4">Support for PDF, DOC, and DOCX files</p>
+              <input
+                type="file"
+                accept=".pdf,.doc,.docx"
+                className="hidden"
+                id="resume-upload"
+                onChange={(e) => setFile(e.target.files?.[0] || null)}
+              />
+              <label
+                htmlFor="resume-upload"
+                className="bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 transition-colors cursor-pointer"
+              >
+                Choose File
+              </label>
+              {file && (
+                <div className="mt-4 flex items-center justify-center space-x-2">
+                  <CheckCircle className="w-5 h-5 text-green-600" />
+                  <span className="text-sm text-gray-600 dark:text-gray-300">{file.name}</span>
+                  <button
+                    onClick={() => setFile(null)}
+                    className="text-red-500 hover:text-red-700"
+                  >
+                    <X className="w-4 h-4" />
+                  </button>
+                </div>
+              )}
+            </div>
+            
+            {file && (
+              <button
+                onClick={handleResumeUpload}
+                disabled={isProcessingResume}
+                className="w-full mt-4 bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center space-x-2"
+              >
+                {isProcessingResume ? (
+                  <>
+                    <Compass className="w-4 h-4 animate-spin" />
+                    <span>Processing Resume...</span>
+                  </>
+                ) : (
+                  <>
+                    <FileText className="w-4 h-4" />
+                    <span>Extract Skills from Resume</span>
+                  </>
+                )}
+              </button>
+            )}
+
+            {/* Extracted Skills Display */}
+            {extractedSkills.length > 0 && (
+              <div className="mt-4 p-4 bg-green-50 dark:bg-green-900/20 rounded-lg">
+                <h4 className="text-sm font-medium text-gray-800 dark:text-gray-100 mb-2">Skills Extracted from Resume:</h4>
+                <div className="flex flex-wrap gap-2">
+                  {extractedSkills.map((skill, index) => (
+                    <span key={index} className="px-2 py-1 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 rounded text-sm">
+                      {skill}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        )}
 
         {/* Interest Selection */}
         <div className="mb-6">
@@ -153,17 +324,19 @@ const CareerExplorer: React.FC = () => {
           />
         </div>
 
-        {/* Current Skills */}
-        <div className="mb-6">
-          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">Current Skills (Optional)</label>
-          <textarea
-            value={currentSkills}
-            onChange={(e) => setCurrentSkills(e.target.value)}
-            placeholder="List your current skills to get more personalized recommendations..."
-            rows={3}
-            className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
-          />
-        </div>
+        {/* Current Skills - Only show in manual mode */}
+        {inputMode === 'manual' && (
+          <div className="mb-6">
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">Current Skills (Optional)</label>
+            <textarea
+              value={currentSkills}
+              onChange={(e) => setCurrentSkills(e.target.value)}
+              placeholder="List your current skills to get more personalized recommendations..."
+              rows={3}
+              className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+            />
+          </div>
+        )}
 
         {error && (
           <div className="mb-4 bg-red-50 border border-red-200 text-red-700 px-4 py-2 rounded">{error}</div>
@@ -171,7 +344,7 @@ const CareerExplorer: React.FC = () => {
 
         <button
           onClick={handleExplore}
-          disabled={isExploring || !interests.trim()}
+          disabled={isExploring || !interests.trim() || (inputMode === 'resume' && extractedSkills.length === 0)}
           className="w-full bg-green-600 text-white py-3 rounded-lg hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center space-x-2"
         >
           {isExploring ? (
@@ -189,7 +362,7 @@ const CareerExplorer: React.FC = () => {
         <div className="mt-3">
           <button
             onClick={fetchJobs}
-            disabled={isLoadingJobs || !interests.trim()}
+            disabled={isLoadingJobs || !interests.trim() || (inputMode === 'resume' && extractedSkills.length === 0)}
             className="w-full bg-white border border-green-200 text-green-700 py-3 rounded-lg hover:bg-green-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           >
             {isLoadingJobs ? 'Fetching real jobs…' : 'Find real jobs based on my interests & skills'}

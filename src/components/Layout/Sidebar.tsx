@@ -3,7 +3,6 @@ import {
   BarChart3, 
   Map, 
   Lightbulb, 
-  Briefcase, 
   Home,
   Bot,
   Mic,
@@ -11,7 +10,8 @@ import {
   School,
   CalendarDays,
   UserCircle2,
-  Sparkles
+  Sparkles,
+  LayoutDashboard
 } from 'lucide-react';
 
 interface SidebarProps {
@@ -20,12 +20,11 @@ interface SidebarProps {
 }
 
 const menuItems = [
-  { id: 'dashboard', icon: Home, label: 'Dashboard' },
-  { id: 'skillGap', icon: BarChart3, label: 'Skill Gap Analyzer' },
-  { id: 'career', icon: Map, label: 'Career Explorer' },
+  { id: 'home', icon: Home, label: 'Home' },
+  { id: 'dashboard', icon: LayoutDashboard, label: 'Dashboard' },
+  { id: 'skillGap', icon: BarChart3, label: 'Skills & Career Tools' },
   // { id: 'chat', icon: MessageCircle, label: 'AI Mentor' },
   { id: 'projects', icon: Lightbulb, label: 'Projects & Hackathons' },
-  { id: 'jobs', icon: Briefcase, label: 'Job Matching' },
   { id: 'interview', icon: Mic, label: 'AI Assistance' },
   { id: 'quiz', icon: ListChecks, label: 'Aptitude & Interest Quiz' },
   { id: 'mapping', icon: School, label: 'Course → Career Mapping' },
