@@ -93,16 +93,16 @@ const AIMentorChat: React.FC = () => {
 
   return (
     <div className="p-6 space-y-6">
-      <div className="bg-white rounded-xl shadow-sm border border-gray-100 h-[calc(100vh-200px)] flex flex-col">
+      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 h-[calc(100vh-200px)] flex flex-col">
         {/* Header */}
-        <div className="p-6 border-b border-gray-100">
+        <div className="p-6 border-b border-gray-100 dark:border-gray-700">
           <div className="flex items-center space-x-3">
             <div className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
               <MessageCircle className="w-5 h-5 text-purple-600" />
             </div>
             <div>
-              <h2 className="text-2xl font-bold text-gray-800">AI Career Mentor</h2>
-              <p className="text-gray-500">Your personal career coaching assistant</p>
+              <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-100">AI Career Mentor</h2>
+              <p className="text-gray-500 dark:text-gray-400">Your personal career coaching assistant</p>
             </div>
           </div>
         </div>
@@ -132,7 +132,7 @@ const AIMentorChat: React.FC = () => {
               <div className={`max-w-xs lg:max-w-md xl:max-w-lg px-4 py-3 rounded-lg ${
                 message.type === 'user'
                   ? 'bg-blue-600 text-white'
-                  : 'bg-gray-100 text-gray-800'
+                  : 'bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-100'
               }`}>
                 {message.type === 'ai' ? (
                   <p className="text-sm" dangerouslySetInnerHTML={{ __html: toHtmlFromMarkdownLite(message.content) }} />
@@ -140,7 +140,7 @@ const AIMentorChat: React.FC = () => {
                   <p className="text-sm whitespace-pre-wrap">{message.content}</p>
                 )}
                 <p className={`text-xs mt-2 ${
-                  message.type === 'user' ? 'text-blue-100' : 'text-gray-500'
+                  message.type === 'user' ? 'text-blue-100' : 'text-gray-500 dark:text-gray-400'
                 }`}>
                   {message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                 </p>
@@ -154,7 +154,7 @@ const AIMentorChat: React.FC = () => {
               <div className="w-8 h-8 bg-gradient-to-br from-purple-500 to-purple-600 rounded-full flex items-center justify-center">
                 <Bot className="w-4 h-4 text-white" />
               </div>
-              <div className="bg-gray-100 px-4 py-3 rounded-lg">
+              <div className="bg-gray-100 dark:bg-gray-700 px-4 py-3 rounded-lg">
                 <div className="flex space-x-1">
                   <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
                   <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
@@ -176,7 +176,7 @@ const AIMentorChat: React.FC = () => {
                 <button
                   key={index}
                   onClick={() => sendMessage(question)}
-                  className="px-3 py-2 text-xs bg-gray-100 text-gray-600 rounded-full hover:bg-gray-200 transition-colors"
+                  className="px-3 py-2 text-xs bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 rounded-full hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
                 >
                   {question}
                 </button>
@@ -193,7 +193,7 @@ const AIMentorChat: React.FC = () => {
               value={inputMessage}
               onChange={(e) => setInputMessage(e.target.value)}
               placeholder="Ask me anything about your career..."
-              className="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
+              className="flex-1 px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
               disabled={isTyping}
             />
             <button

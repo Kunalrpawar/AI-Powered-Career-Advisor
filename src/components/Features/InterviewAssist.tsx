@@ -97,33 +97,33 @@ const InterviewAssist: React.FC = () => {
 
   return (
     <div className="p-6 space-y-6">
-      <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6">
         <div className="flex items-center space-x-3 mb-6">
           <div className="w-10 h-10 bg-indigo-100 rounded-lg flex items-center justify-center">
             <MessageSquare className="w-5 h-5 text-indigo-600" />
           </div>
           <div>
-            <h2 className="text-2xl font-bold text-gray-800">AI Interview Assist</h2>
-            <p className="text-gray-500">Practice interviews with real-time speech capture and feedback</p>
+            <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-100">AI Interview Assist</h2>
+            <p className="text-gray-500 dark:text-gray-400">Practice interviews with real-time speech capture and feedback</p>
           </div>
         </div>
 
         {error && <div className="mb-4 bg-red-50 border border-red-200 text-red-700 px-4 py-2 rounded">{error}</div>}
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-          <input value={role} onChange={(e) => setRole(e.target.value)} className="px-3 py-2 border rounded" placeholder="Role (e.g., Software Engineer)" />
-          <input value={topic} onChange={(e) => setTopic(e.target.value)} className="px-3 py-2 border rounded" placeholder="Topic (e.g., system design)" />
+          <input value={role} onChange={(e) => setRole(e.target.value)} className="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100" placeholder="Role (e.g., Software Engineer)" />
+          <input value={topic} onChange={(e) => setTopic(e.target.value)} className="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100" placeholder="Topic (e.g., system design)" />
           <button onClick={startInterview} className="px-4 py-2 bg-indigo-600 text-white rounded">Start Interview</button>
         </div>
 
-        <div className="p-4 bg-gray-50 rounded mb-4">
-          <p className="text-sm text-gray-600 mb-1">Current Question</p>
-          <p className="text-gray-800 font-medium">{question || 'Click Start Interview to get the first question.'}</p>
+        <div className="p-4 bg-gray-50 dark:bg-gray-700 rounded mb-4">
+          <p className="text-sm text-gray-600 dark:text-gray-300 mb-1">Current Question</p>
+          <p className="text-gray-800 dark:text-gray-100 font-medium">{question || 'Click Start Interview to get the first question.'}</p>
         </div>
 
-        <div className="p-4 bg-white border rounded mb-4">
-          <p className="text-sm text-gray-600 mb-2">Your Answer (live transcript)</p>
-          <div className="min-h-[80px] text-gray-800 whitespace-pre-wrap">{transcript}</div>
+        <div className="p-4 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded mb-4">
+          <p className="text-sm text-gray-600 dark:text-gray-300 mb-2">Your Answer (live transcript)</p>
+          <div className="min-h-[80px] text-gray-800 dark:text-gray-100 whitespace-pre-wrap">{transcript}</div>
         </div>
 
         <div className="flex items-center space-x-3">
@@ -135,9 +135,9 @@ const InterviewAssist: React.FC = () => {
       </div>
 
       {feedback && (
-        <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-          <h3 className="text-xl font-semibold text-gray-800 mb-4">Feedback & Improvements</h3>
-          <div className="text-gray-700 text-sm" dangerouslySetInnerHTML={{ __html: toHtmlFromMarkdownLite(feedback) }} />
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6">
+          <h3 className="text-xl font-semibold text-gray-800 dark:text-gray-100 mb-4">Feedback & Improvements</h3>
+          <div className="text-gray-700 dark:text-gray-300 text-sm" dangerouslySetInnerHTML={{ __html: toHtmlFromMarkdownLite(feedback) }} />
         </div>
       )}
     </div>

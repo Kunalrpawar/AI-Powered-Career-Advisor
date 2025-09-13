@@ -16,7 +16,7 @@ router.get('/ping', (req, res) => {
 // Register
 router.post('/register', async (req, res) => {
   try {
-    let { name, email, password } = req.body;
+    let { name, email, password, age, gender, classStd, academicInterests } = req.body;
     if (typeof email === 'string') email = email.trim().toLowerCase();
     if (!name || !email || !password) {
       return res.status(400).json({ error: 'Name, email, and password are required' });
@@ -29,11 +29,30 @@ router.post('/register', async (req, res) => {
       return res.status(409).json({ error: 'Email already registered' });
     }
     const hash = await bcrypt.hash(password, 10);
-    const user = await User.create({ name, email, passwordHash: hash });
+    const userData = { 
+      name, 
+      email, 
+      passwordHash: hash,
+      ...(age && { age: parseInt(age) }),
+      ...(gender && { gender }),
+      ...(classStd && { classStd }),
+      ...(academicInterests && { academicInterests })
+    };
+    const user = await User.create(userData);
     const token = jwt.sign({ userId: user._id }, JWT_SECRET, { expiresIn: '7d' });
     res.json({
       token,
-      user: { id: user._id, name: user.name, email: user.email }
+      user: { 
+        id: user._id, 
+        name: user.name, 
+        email: user.email,
+        age: user.age,
+        gender: user.gender,
+        classStd: user.classStd,
+        academicInterests: user.academicInterests,
+        badges: user.badges || [],
+        completedTasks: user.completedTasks || []
+      }
     });
   } catch (err) {
     console.error('Register error:', err);
@@ -60,7 +79,20 @@ router.post('/login', async (req, res) => {
     const ok = await bcrypt.compare(password, user.passwordHash);
     if (!ok) return res.status(401).json({ error: 'Invalid credentials' });
     const token = jwt.sign({ userId: user._id }, JWT_SECRET, { expiresIn: '7d' });
-    res.json({ token, user: { id: user._id, name: user.name, email: user.email } });
+    res.json({ 
+      token, 
+      user: { 
+        id: user._id, 
+        name: user.name, 
+        email: user.email,
+        age: user.age,
+        gender: user.gender,
+        classStd: user.classStd,
+        academicInterests: user.academicInterests,
+        badges: user.badges || [],
+        completedTasks: user.completedTasks || []
+      } 
+    });
   } catch (err) {
     console.error('Login error:', err);
     res.status(500).json({ error: 'Login failed' });
@@ -76,7 +108,17 @@ router.get('/me', async (req, res) => {
     const payload = jwt.verify(token, JWT_SECRET);
     const user = await User.findById(payload.userId).lean();
     if (!user) return res.status(401).json({ error: 'Unauthorized' });
-    res.json({ id: user._id, name: user.name, email: user.email });
+    res.json({ 
+      id: user._id, 
+      name: user.name, 
+      email: user.email,
+      age: user.age,
+      gender: user.gender,
+      classStd: user.classStd,
+      academicInterests: user.academicInterests,
+      badges: user.badges || [],
+      completedTasks: user.completedTasks || []
+    });
   } catch (err) {
     res.status(401).json({ error: 'Unauthorized' });
   }

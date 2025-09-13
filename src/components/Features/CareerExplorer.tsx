@@ -115,20 +115,20 @@ const CareerExplorer: React.FC = () => {
 
   return (
     <div className="p-6 space-y-6">
-      <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6">
         <div className="flex items-center space-x-3 mb-6">
           <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
             <Map className="w-5 h-5 text-green-600" />
           </div>
           <div>
-            <h2 className="text-2xl font-bold text-gray-800">Career Path Explorer</h2>
-            <p className="text-gray-500">Discover career opportunities that match your interests and skills</p>
+            <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-100">Career Path Explorer</h2>
+            <p className="text-gray-500 dark:text-gray-400">Discover career opportunities that match your interests and skills</p>
           </div>
         </div>
 
         {/* Interest Selection */}
         <div className="mb-6">
-          <label className="block text-sm font-medium text-gray-700 mb-3">Select Your Interests</label>
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">Select Your Interests</label>
           <div className="flex flex-wrap gap-2 mb-4">
             {predefinedInterests.map((interest) => (
               <button
@@ -136,8 +136,8 @@ const CareerExplorer: React.FC = () => {
                 onClick={() => toggleInterest(interest)}
                 className={`px-4 py-2 rounded-full text-sm transition-colors ${
                   interests.includes(interest)
-                    ? 'bg-green-100 text-green-700 border-2 border-green-200'
-                    : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                    ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 border-2 border-green-200 dark:border-green-800'
+                    : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
                 }`}
               >
                 {interest}
@@ -149,19 +149,19 @@ const CareerExplorer: React.FC = () => {
             onChange={(e) => setInterests(e.target.value)}
             placeholder="Or describe your interests manually..."
             rows={2}
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
+            className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
           />
         </div>
 
         {/* Current Skills */}
         <div className="mb-6">
-          <label className="block text-sm font-medium text-gray-700 mb-3">Current Skills (Optional)</label>
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">Current Skills (Optional)</label>
           <textarea
             value={currentSkills}
             onChange={(e) => setCurrentSkills(e.target.value)}
             placeholder="List your current skills to get more personalized recommendations..."
             rows={3}
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
+            className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
           />
         </div>
 
@@ -201,16 +201,16 @@ const CareerExplorer: React.FC = () => {
       {careerPaths.length > 0 && (
         <div className="space-y-4">
           {careerPaths.map((path, index) => (
-            <div key={index} className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+            <div key={index} className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden">
               <div className="p-6">
                 <div className="flex items-start justify-between mb-4">
                   <div className="flex-1">
-                    <h3 className="text-xl font-semibold text-gray-800 mb-2">{path.title}</h3>
-                    <p className="text-gray-600 mb-4">{path.description}</p>
+                    <h3 className="text-xl font-semibold text-gray-800 dark:text-gray-100 mb-2">{path.title}</h3>
+                    <p className="text-gray-600 dark:text-gray-300 mb-4">{path.description}</p>
                   </div>
                   <button
                     onClick={() => setExpandedPath(expandedPath === index ? null : index)}
-                    className="ml-4 p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
+                    className="ml-4 p-2 text-gray-400 hover:text-gray-600 dark:text-gray-300 hover:bg-gray-100 rounded-lg transition-colors"
                   >
                     {expandedPath === index ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
                   </button>
@@ -222,31 +222,31 @@ const CareerExplorer: React.FC = () => {
                     <DollarSign className="w-5 h-5 text-blue-600" />
                     <div>
                       <p className="text-sm text-blue-600 font-medium">Salary Range</p>
-                      <p className="text-sm text-gray-700">{path.salaryRange}</p>
+                      <p className="text-sm text-gray-700 dark:text-gray-300">{path.salaryRange}</p>
                     </div>
                   </div>
                   <div className="flex items-center space-x-3 p-3 bg-green-50 rounded-lg">
                     <TrendingUp className="w-5 h-5 text-green-600" />
                     <div>
                       <p className="text-sm text-green-600 font-medium">Growth Rate</p>
-                      <p className="text-sm text-gray-700">{path.growthRate} annually</p>
+                      <p className="text-sm text-gray-700 dark:text-gray-300">{path.growthRate} annually</p>
                     </div>
                   </div>
                   <div className="flex items-center space-x-3 p-3 bg-purple-50 rounded-lg">
                     <Clock className="w-5 h-5 text-purple-600" />
                     <div>
                       <p className="text-sm text-purple-600 font-medium">Time to Proficiency</p>
-                      <p className="text-sm text-gray-700">8-12 months</p>
+                      <p className="text-sm text-gray-700 dark:text-gray-300">8-12 months</p>
                     </div>
                   </div>
                 </div>
 
                 {/* Required Skills */}
                 <div className="mb-6">
-                  <h4 className="text-sm font-medium text-gray-700 mb-3">Required Skills</h4>
+                  <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">Required Skills</h4>
                   <div className="flex flex-wrap gap-2">
                     {path.requiredSkills && path.requiredSkills.map((skill: string, skillIndex: number) => (
-                      <span key={skillIndex} className="px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm">
+                      <span key={skillIndex} className="px-3 py-1 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-full text-sm">
                         {skill}
                       </span>
                     ))}
@@ -256,24 +256,24 @@ const CareerExplorer: React.FC = () => {
 
               {/* Learning Roadmap */}
               {expandedPath === index && path.roadmap && (
-                <div className="border-t border-gray-100 p-6 bg-gray-50">
-                  <h4 className="text-lg font-semibold text-gray-800 mb-4">Learning Roadmap</h4>
+                <div className="border-t border-gray-100 dark:border-gray-700 p-6 bg-gray-50 dark:bg-gray-700/50">
+                  <h4 className="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-4">Learning Roadmap</h4>
                   <div className="space-y-4">
                     {path.roadmap.map((phase: any, phaseIndex: number) => (
                       <div key={phaseIndex} className="flex items-start space-x-4">
-                        <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center text-green-600 font-medium text-sm flex-shrink-0">
+                        <div className="w-8 h-8 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center text-green-600 dark:text-green-400 font-medium text-sm flex-shrink-0">
                           {phaseIndex + 1}
                         </div>
                         <div className="flex-1">
                           <div className="flex items-center justify-between mb-2">
-                            <h5 className="font-medium text-gray-800">{phase.phase}</h5>
-                            <span className="text-xs text-gray-500 bg-white px-2 py-1 rounded">
+                            <h5 className="font-medium text-gray-800 dark:text-gray-100">{phase.phase}</h5>
+                            <span className="text-xs text-gray-500 dark:text-gray-400 bg-white dark:bg-gray-600 px-2 py-1 rounded">
                               {phase.duration}
                             </span>
                           </div>
                           <div className="flex flex-wrap gap-2">
                             {phase.skills && phase.skills.map((skill: string, skillIndex: number) => (
-                              <span key={skillIndex} className="px-2 py-1 bg-white text-gray-600 rounded text-sm">
+                              <span key={skillIndex} className="px-2 py-1 bg-white dark:bg-gray-600 text-gray-600 dark:text-gray-300 rounded text-sm">
                                 {skill}
                               </span>
                             ))}
@@ -291,17 +291,17 @@ const CareerExplorer: React.FC = () => {
 
       {/* Real Jobs */}
       {jobs.length > 0 && (
-        <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-          <h3 className="text-xl font-semibold text-gray-800 mb-4">Real Jobs</h3>
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6">
+          <h3 className="text-xl font-semibold text-gray-800 dark:text-gray-100 mb-4">Real Jobs</h3>
           <div className="space-y-3">
             {jobs.map((j) => (
-              <a key={j.id} href={j.url} target="_blank" rel="noreferrer" className="block p-3 rounded-lg border border-gray-200 hover:bg-gray-50">
+              <a key={j.id} href={j.url} target="_blank" rel="noreferrer" className="block p-3 rounded-lg border border-gray-200 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700/50">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="font-medium text-gray-900">{j.title}</p>
-                    <p className="text-sm text-gray-600">{j.company} • {j.location || 'Remote'}</p>
+                    <p className="font-medium text-gray-900 dark:text-gray-100">{j.title}</p>
+                    <p className="text-sm text-gray-600 dark:text-gray-300">{j.company} • {j.location || 'Remote'}</p>
                   </div>
-                  <span className="text-xs text-gray-500">{j.publishedAt ? new Date(j.publishedAt).toLocaleDateString() : ''}</span>
+                  <span className="text-xs text-gray-500 dark:text-gray-400">{j.publishedAt ? new Date(j.publishedAt).toLocaleDateString() : ''}</span>
                 </div>
               </a>
             ))}

@@ -29,6 +29,7 @@ import authRoutes from './routes/auth.js';
 import documentRoutes from './routes/documents.js';
 import dashboardRoutes from './routes/dashboard.js';
 import interviewRoutes from './routes/interview.js';
+import profileRoutes from './routes/profile.js';
 // existing route imports below
 
 // Debug environment variables
@@ -103,6 +104,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/documents', documentRoutes);
 app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/interview', interviewRoutes);
+app.use('/api/profile', profileRoutes);
 app.use('/api/skill-gap', skillGapRoutes);
 app.use('/api/career', careerRoutes);
 app.use('/api/chat', chatRoutes);

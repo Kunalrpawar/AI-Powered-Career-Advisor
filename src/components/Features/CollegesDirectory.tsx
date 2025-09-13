@@ -104,39 +104,39 @@ const CollegesDirectory: React.FC = () => {
   return (
     <div className="p-6">
       <div className="max-w-5xl mx-auto">
-        <h1 className="text-2xl font-bold text-gray-900 mb-2">Nearby Government Colleges</h1>
-        <p className="text-gray-600 mb-4">Search by name, city, or state. Allow location to filter nearby colleges.</p>
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">Nearby Government Colleges</h1>
+        <p className="text-gray-600 dark:text-gray-300 mb-4">Search by name, city, or state. Allow location to filter nearby colleges.</p>
         <div className="mb-4 flex items-center gap-3">
           <input
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Search colleges..."
-            className="w-full md:w-96 border border-gray-200 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-100 focus:border-blue-500 outline-none"
+            className="w-full md:w-96 border border-gray-200 dark:border-gray-600 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-100 focus:border-blue-500 outline-none bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
           />
-          <button onClick={requestLocation} className="px-3 py-2 text-sm rounded-lg border border-gray-200 hover:bg-gray-50">{coords ? 'Refresh location' : 'Use my location'}</button>
+          <button onClick={requestLocation} className="px-3 py-2 text-sm rounded-lg border border-gray-200 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100">{coords ? 'Refresh location' : 'Use my location'}</button>
         </div>
         {locError && <div className="mb-3 text-sm text-red-600">{locError}</div>}
         <div className="mb-6 flex items-center gap-4">
-          <label className="flex items-center gap-2 text-sm text-gray-700">
+          <label className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
             <input type="checkbox" checked={onlyNearby} onChange={(e) => setOnlyNearby(e.target.checked)} />
             Show only within
           </label>
           <div className="flex items-center gap-2 text-sm">
             <input type="range" min={5} max={50} step={5} value={radiusKm} onChange={(e) => setRadiusKm(Number(e.target.value))} />
-            <span className="text-gray-700 font-medium">{radiusKm} km</span>
+            <span className="text-gray-700 dark:text-gray-300 font-medium">{radiusKm} km</span>
           </div>
-          <span className="text-xs text-gray-500">{coords ? 'Location enabled' : 'Location off'}</span>
+          <span className="text-xs text-gray-500 dark:text-gray-400">{coords ? 'Location enabled' : 'Location off'}</span>
         </div>
         <div className="grid md:grid-cols-2 gap-6">
           {withDistance.length === 0 && (
-            <div className="md:col-span-2 text-sm text-gray-600">{coords ? 'No colleges found within the selected radius.' : 'Enable location to see nearby colleges within 20km.'}</div>
+            <div className="md:col-span-2 text-sm text-gray-600 dark:text-gray-300">{coords ? 'No colleges found within the selected radius.' : 'Enable location to see nearby colleges within 20km.'}</div>
           )}
           {withDistance.map(({ college: c, distanceKm }) => (
-            <div key={c.id} className="bg-white rounded-xl border border-gray-200 p-5">
+            <div key={c.id} className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-5">
               <div className="flex items-start justify-between">
                 <div>
-                  <h2 className="font-semibold text-gray-900">{c.name}</h2>
-                  <p className="text-sm text-gray-600">{c.city}, {c.state}</p>
+                  <h2 className="font-semibold text-gray-900 dark:text-gray-100">{c.name}</h2>
+                  <p className="text-sm text-gray-600 dark:text-gray-300">{c.city}, {c.state}</p>
                 </div>
                 {distanceKm != null && (
                   <span className="text-xs px-2 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">{distanceKm} km</span>
@@ -144,24 +144,24 @@ const CollegesDirectory: React.FC = () => {
               </div>
               <div className="mt-3 grid grid-cols-2 gap-3">
                 <div>
-                  <p className="text-xs text-gray-500">Avg fees / year</p>
-                  <p className="text-sm font-medium text-gray-800">₹{c.avgFeesPerYearINR?.toLocaleString() ?? '—'}</p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400">Avg fees / year</p>
+                  <p className="text-sm font-medium text-gray-800 dark:text-gray-100">₹{c.avgFeesPerYearINR?.toLocaleString() ?? '—'}</p>
                 </div>
                 <div>
-                  <p className="text-xs text-gray-500">Hostel</p>
-                  <p className="text-sm font-medium text-gray-800">{c.hostel ? 'Available' : '—'}</p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400">Hostel</p>
+                  <p className="text-sm font-medium text-gray-800 dark:text-gray-100">{c.hostel ? 'Available' : '—'}</p>
                 </div>
                 <div>
-                  <p className="text-xs text-gray-500">Safety</p>
-                  <p className="text-sm font-medium text-gray-800">{c.safetyScore ? `${c.safetyScore}/5` : '—'}</p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400">Safety</p>
+                  <p className="text-sm font-medium text-gray-800 dark:text-gray-100">{c.safetyScore ? `${c.safetyScore}/5` : '—'}</p>
                 </div>
                 <div>
-                  <p className="text-xs text-gray-500">Transport</p>
-                  <p className="text-sm font-medium text-gray-800">Bus/Local</p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400">Transport</p>
+                  <p className="text-sm font-medium text-gray-800 dark:text-gray-100">Bus/Local</p>
                 </div>
               </div>
               <div className="mt-3">
-                <p className="text-sm font-medium text-gray-800">Degrees:</p>
+                <p className="text-sm font-medium text-gray-800 dark:text-gray-100">Degrees:</p>
                 <div className="flex flex-wrap gap-2 mt-1">
                   {c.degrees.map((d) => (
                     <span key={d} className="text-xs px-2 py-1 bg-blue-50 text-blue-700 rounded-full border border-blue-200">{d}</span>
@@ -169,7 +169,7 @@ const CollegesDirectory: React.FC = () => {
                 </div>
               </div>
               <div className="mt-3">
-                <p className="text-sm font-medium text-gray-800">Facilities:</p>
+                <p className="text-sm font-medium text-gray-800 dark:text-gray-100">Facilities:</p>
                 <div className="flex flex-wrap gap-2 mt-1">
                   {c.facilities.map((f) => (
                     <span key={f} className="text-xs px-2 py-1 bg-purple-50 text-purple-700 rounded-full border border-purple-200">{f}</span>

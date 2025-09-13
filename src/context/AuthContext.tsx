@@ -1,12 +1,32 @@
 import React, { createContext, useContext, useEffect, useMemo, useState } from 'react';
 
-type User = { id: string; name: string; email: string } | null;
+type User = { 
+  id: string; 
+  name: string; 
+  email: string;
+  age?: number;
+  gender?: string;
+  classStd?: string;
+  academicInterests?: string[];
+  badges?: Array<{
+    id: string;
+    name: string;
+    description: string;
+    earnedAt: string;
+    category: string;
+  }>;
+  completedTasks?: Array<{
+    taskId: string;
+    taskName: string;
+    completedAt: string;
+  }>;
+} | null;
 
 interface AuthContextValue {
   user: User;
   token: string | null;
   login: (email: string, password: string) => Promise<void>;
-  register: (name: string, email: string, password: string) => Promise<void>;
+  register: (name: string, email: string, password: string, additionalData?: any) => Promise<void>;
   logout: () => void;
   loading: boolean;
 }
@@ -68,11 +88,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setUser(data.user);
   };
 
-  const register = async (name: string, email: string, password: string) => {
+  const register = async (name: string, email: string, password: string, additionalData?: any) => {
     const res = await fetch('/api/auth/register', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name, email, password }),
+      body: JSON.stringify({ name, email, password, ...additionalData }),
     });
     if (!res.ok) {
       const t = await res.text();

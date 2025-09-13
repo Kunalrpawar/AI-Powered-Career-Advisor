@@ -69,14 +69,14 @@ const JobMatcher: React.FC = () => {
 
   return (
     <div className="p-6 space-y-6">
-      <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6">
         <div className="flex items-center space-x-3 mb-6">
           <div className="w-10 h-10 bg-indigo-100 rounded-lg flex items-center justify-center">
             <Briefcase className="w-5 h-5 text-indigo-600" />
           </div>
           <div>
-            <h2 className="text-2xl font-bold text-gray-800">Job & Internship Matching</h2>
-            <p className="text-gray-500">Find opportunities that match your skills and experience</p>
+            <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-100">Job & Internship Matching</h2>
+            <p className="text-gray-500 dark:text-gray-400">Find opportunities that match your skills and experience</p>
           </div>
         </div>
 
@@ -86,8 +86,8 @@ const JobMatcher: React.FC = () => {
             onClick={() => setMatchType('profile')}
             className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition-colors ${
               matchType === 'profile' 
-                ? 'bg-indigo-100 text-indigo-600 border-2 border-indigo-200' 
-                : 'bg-gray-50 text-gray-600 hover:bg-gray-100'
+                ? 'bg-indigo-100 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 border-2 border-indigo-200 dark:border-indigo-800' 
+                : 'bg-gray-50 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-600'
             }`}
           >
             <FileText className="w-4 h-4" />
@@ -97,8 +97,8 @@ const JobMatcher: React.FC = () => {
             onClick={() => setMatchType('upload')}
             className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition-colors ${
               matchType === 'upload' 
-                ? 'bg-indigo-100 text-indigo-600 border-2 border-indigo-200' 
-                : 'bg-gray-50 text-gray-600 hover:bg-gray-100'
+                ? 'bg-indigo-100 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 border-2 border-indigo-200 dark:border-indigo-800' 
+                : 'bg-gray-50 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-600'
             }`}
           >
             <Upload className="w-4 h-4" />
@@ -109,7 +109,7 @@ const JobMatcher: React.FC = () => {
         {/* Input Section */}
         {matchType === 'profile' ? (
           <div className="space-y-4">
-            <label htmlFor="profile" className="block text-sm font-medium text-gray-700">
+            <label htmlFor="profile" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
               Describe your skills, experience, and career interests
             </label>
             <textarea
@@ -118,14 +118,14 @@ const JobMatcher: React.FC = () => {
               onChange={(e) => setProfileSummary(e.target.value)}
               placeholder="e.g., Frontend developer with 2+ years experience in React, JavaScript, and CSS. Passionate about creating user-friendly interfaces and interested in full-stack development..."
               rows={5}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+              className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
             />
           </div>
         ) : (
-          <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-indigo-400 transition-colors">
-            <Upload className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-            <h3 className="text-lg font-medium text-gray-700 mb-2">Upload your resume</h3>
-            <p className="text-gray-500 mb-4">PDF, DOC, or DOCX format</p>
+          <div className="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-8 text-center hover:border-indigo-400 dark:hover:border-indigo-500 transition-colors">
+            <Upload className="w-12 h-12 text-gray-400 dark:text-gray-500 dark:text-gray-400 mx-auto mb-4" />
+            <h3 className="text-lg font-medium text-gray-700 dark:text-gray-300 mb-2">Upload your resume</h3>
+            <p className="text-gray-500 dark:text-gray-400 mb-4">PDF, DOC, or DOCX format</p>
             <input
               type="file"
               accept=".pdf,.doc,.docx"
@@ -163,23 +163,23 @@ const JobMatcher: React.FC = () => {
       {/* Job Matches */}
       {matches.length > 0 && (
         <div className="space-y-4">
-          <h3 className="text-xl font-semibold text-gray-800">Job Matches for You</h3>
+          <h3 className="text-xl font-semibold text-gray-800 dark:text-gray-100">Job Matches for You</h3>
           <div className="grid grid-cols-1 gap-4">
             {matches.map((job, index) => (
-              <div key={job.id || index} className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+              <div key={job.id || index} className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6">
                 <div className="flex items-start justify-between mb-4">
                   <div className="flex-1">
                     <div className="flex items-center space-x-3 mb-2">
-                      <h4 className="text-lg font-semibold text-gray-800">{job.title}</h4>
+                      <h4 className="text-lg font-semibold text-gray-800 dark:text-gray-100">{job.title}</h4>
                       {job.fitPercentage && (
                         <div className="flex items-center space-x-1">
                           <Star className="w-4 h-4 text-yellow-500" />
-                          <span className="text-sm font-medium text-gray-600">{job.fitPercentage}% match</span>
+                          <span className="text-sm font-medium text-gray-600 dark:text-gray-300">{job.fitPercentage}% match</span>
                         </div>
                       )}
                     </div>
                     <p className="text-indigo-600 font-medium mb-1">{job.company}</p>
-                    <div className="flex items-center space-x-4 text-sm text-gray-500 mb-3">
+                    <div className="flex items-center space-x-4 text-sm text-gray-500 dark:text-gray-400 mb-3">
                       <div className="flex items-center">
                         <MapPin className="w-4 h-4 mr-1" />
                         {job.location}
@@ -194,10 +194,10 @@ const JobMatcher: React.FC = () => {
 
                 {/* Required Skills */}
                 <div className="mb-4">
-                  <h5 className="text-sm font-medium text-gray-700 mb-2">Required Skills</h5>
+                  <h5 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Required Skills</h5>
                   <div className="flex flex-wrap gap-2">
                     {job.skills && job.skills.map((skill: string, skillIndex: number) => (
-                      <span key={skillIndex} className="px-2 py-1 bg-indigo-100 text-indigo-700 rounded text-sm">
+                      <span key={skillIndex} className="px-2 py-1 bg-indigo-100 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-400 rounded text-sm">
                         {skill}
                       </span>
                     ))}
@@ -212,7 +212,7 @@ const JobMatcher: React.FC = () => {
                   </button>
                   <button 
                     onClick={() => generateCoverLetter(job)}
-                    className="flex items-center space-x-2 px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
+                    className="flex items-center space-x-2 px-4 py-2 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
                   >
                     <FileText className="w-4 h-4" />
                     <span>Generate Cover Letter</span>
@@ -227,10 +227,10 @@ const JobMatcher: React.FC = () => {
       {/* Cover Letter Modal */}
       {selectedJob && coverLetter && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-xl shadow-xl max-w-2xl w-full max-h-[80vh] overflow-hidden">
-            <div className="p-6 border-b border-gray-200">
+          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-xl max-w-2xl w-full max-h-[80vh] overflow-hidden">
+            <div className="p-6 border-b border-gray-200 dark:border-gray-700">
               <div className="flex items-center justify-between">
-                <h3 className="text-xl font-semibold text-gray-800">
+                <h3 className="text-xl font-semibold text-gray-800 dark:text-gray-100">
                   Cover Letter for {selectedJob.title}
                 </h3>
                 <button
@@ -238,7 +238,7 @@ const JobMatcher: React.FC = () => {
                     setSelectedJob(null);
                     setCoverLetter('');
                   }}
-                  className="text-gray-400 hover:text-gray-600 text-2xl"
+                  className="text-gray-400 dark:text-gray-500 dark:text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 text-2xl"
                 >
                   ×
                 </button>
@@ -249,12 +249,12 @@ const JobMatcher: React.FC = () => {
               {isGenerating ? (
                 <div className="text-center py-8">
                   <FileText className="w-12 h-12 text-indigo-400 mx-auto mb-4 animate-pulse" />
-                  <p className="text-gray-500">Generating personalized cover letter...</p>
+                  <p className="text-gray-500 dark:text-gray-400">Generating personalized cover letter...</p>
                 </div>
               ) : (
                 <div className="space-y-4">
-                  <div className="bg-gray-50 rounded-lg p-4">
-                    <pre className="whitespace-pre-wrap text-gray-700 font-sans text-sm leading-relaxed">
+                  <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-4">
+                    <pre className="whitespace-pre-wrap text-gray-700 dark:text-gray-300 font-sans text-sm leading-relaxed">
                       {coverLetter}
                     </pre>
                   </div>
@@ -264,7 +264,7 @@ const JobMatcher: React.FC = () => {
                       <Download className="w-4 h-4" />
                       <span>Download</span>
                     </button>
-                    <button className="flex items-center space-x-2 px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors">
+                    <button className="flex items-center space-x-2 px-4 py-2 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors">
                       <FileText className="w-4 h-4" />
                       <span>Copy to Clipboard</span>
                     </button>

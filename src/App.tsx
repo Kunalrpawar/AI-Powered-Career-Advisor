@@ -104,10 +104,10 @@ function AppContent() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       <Sidebar activeSection={activeSection} setActiveSection={setActiveSection} />
       <div className="ml-64 h-screen flex flex-col">
-        <Header />
+        <Header setActiveSection={setActiveSection} />
         <main className="flex-1 overflow-y-auto min-h-0">{renderActiveSection()}</main>
       </div>
     </div>

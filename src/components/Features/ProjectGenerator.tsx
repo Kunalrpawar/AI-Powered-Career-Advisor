@@ -437,20 +437,20 @@ server.listen(5000);`
 
   return (
     <div className="p-6 space-y-6">
-      <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6">
         <div className="flex items-center space-x-3 mb-6">
           <div className="w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center">
             <Lightbulb className="w-5 h-5 text-orange-600" />
           </div>
           <div>
-            <h2 className="text-2xl font-bold text-gray-800">Project & Hackathon Generator</h2>
-            <p className="text-gray-500">Get AI-powered project ideas to build your portfolio</p>
+            <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-100">Project & Hackathon Generator</h2>
+            <p className="text-gray-500 dark:text-gray-400">Get AI-powered project ideas to build your portfolio</p>
           </div>
         </div>
 
         {/* Interest Selection */}
         <div className="mb-6">
-          <label className="block text-sm font-medium text-gray-700 mb-3">Choose Your Interest Area</label>
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">Choose Your Interest Area</label>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3">
             {interestAreas.map((area) => (
               <button
@@ -458,8 +458,8 @@ server.listen(5000);`
                 onClick={() => setInterest(area)}
                 className={`p-3 rounded-lg text-sm font-medium transition-colors ${
                   interest === area
-                    ? 'bg-orange-100 text-orange-700 border-2 border-orange-200'
-                    : 'bg-gray-50 text-gray-600 hover:bg-gray-100 border border-gray-200'
+                    ? 'bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-400 border-2 border-orange-200 dark:border-orange-800'
+                    : 'bg-gray-50 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-600 border border-gray-200 dark:border-gray-600'
                 }`}
               >
                 {area}
@@ -470,7 +470,7 @@ server.listen(5000);`
 
         {/* Difficulty Selection */}
         <div className="mb-6">
-          <label className="block text-sm font-medium text-gray-700 mb-3">Select Difficulty Level</label>
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">Select Difficulty Level</label>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {difficultyLevels.map((level) => (
               <button
@@ -479,21 +479,21 @@ server.listen(5000);`
                 className={`p-4 rounded-lg text-left transition-colors ${
                   difficulty === level.value
                     ? `bg-${level.color}-100 border-2 border-${level.color}-200`
-                    : 'bg-gray-50 hover:bg-gray-100 border border-gray-200'
+                    : 'bg-gray-50 dark:bg-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 border border-gray-200 dark:border-gray-600'
                 }`}
               >
                 <div className="flex items-center justify-between mb-2">
                   <span className={`text-sm font-medium ${
                     difficulty === level.value 
                       ? `text-${level.color}-700` 
-                      : 'text-gray-700'
+                      : 'text-gray-700 dark:text-gray-300'
                   }`}>
                     {level.label}
                   </span>
                   <span className={`px-2 py-1 rounded-full text-xs ${
                     difficulty === level.value
                       ? `bg-${level.color}-200 text-${level.color}-700`
-                      : 'bg-gray-200 text-gray-600'
+                      : 'bg-gray-200 text-gray-600 dark:text-gray-300'
                   }`}>
                     {level.description}
                   </span>
@@ -530,16 +530,16 @@ server.listen(5000);`
       {projects.length > 0 && (
         <div className="space-y-6">
           {projects.map((project, index) => (
-            <div key={index} className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+            <div key={index} className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6">
               <div className="flex items-start justify-between mb-4">
                 <div className="flex-1">
                   <div className="flex items-center space-x-3 mb-2">
-                    <h3 className="text-xl font-semibold text-gray-800">{project.title}</h3>
+                    <h3 className="text-xl font-semibold text-gray-800 dark:text-gray-100">{project.title}</h3>
                     <span className={`px-3 py-1 rounded-full text-xs font-medium bg-${getDifficultyColor(project.difficulty)}-100 text-${getDifficultyColor(project.difficulty)}-700`}>
                       {project.difficulty}
                     </span>
                   </div>
-                  <p className="text-gray-600">{project.description}</p>
+                  <p className="text-gray-600 dark:text-gray-300">{project.description}</p>
                 </div>
               </div>
 
@@ -547,13 +547,13 @@ server.listen(5000);`
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                 {/* Technologies */}
                 <div>
-                  <h4 className="text-sm font-medium text-gray-700 mb-3 flex items-center">
+                  <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3 flex items-center">
                     <Code className="w-4 h-4 mr-2" />
                     Technologies
                   </h4>
                   <div className="flex flex-wrap gap-2">
                     {project.technologies && project.technologies.map((tech: string, techIndex: number) => (
-                      <span key={techIndex} className="px-2 py-1 bg-blue-100 text-blue-700 rounded text-sm">
+                      <span key={techIndex} className="px-2 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 rounded text-sm">
                         {tech}
                       </span>
                     ))}
@@ -562,22 +562,22 @@ server.listen(5000);`
 
                 {/* Estimated Time */}
                 <div>
-                  <h4 className="text-sm font-medium text-gray-700 mb-3 flex items-center">
+                  <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3 flex items-center">
                     <Clock className="w-4 h-4 mr-2" />
                     Estimated Time
                   </h4>
-                  <p className="text-gray-600">{project.estimatedTime}</p>
+                  <p className="text-gray-600 dark:text-gray-300">{project.estimatedTime}</p>
                 </div>
               </div>
 
               {/* Learning Outcomes */}
               {project.learningOutcomes && (
                 <div className="mb-6">
-                  <h4 className="text-sm font-medium text-gray-700 mb-3 flex items-center">
+                  <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3 flex items-center">
                     <Tag className="w-4 h-4 mr-2" />
                     Learning Outcomes
                   </h4>
-                  <ul className="list-disc list-inside space-y-1 text-gray-600">
+                  <ul className="list-disc list-inside space-y-1 text-gray-600 dark:text-gray-300">
                     {project.learningOutcomes.map((outcome: string, outcomeIndex: number) => (
                       <li key={outcomeIndex} className="text-sm">{outcome}</li>
                     ))}
@@ -588,7 +588,7 @@ server.listen(5000);`
               {/* Starter Code */}
               {project.starterCode && (
                 <div>
-                  <h4 className="text-sm font-medium text-gray-700 mb-3">Starter Code</h4>
+                  <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">Starter Code</h4>
                   <pre className="bg-gray-900 text-gray-100 p-4 rounded-lg overflow-x-auto text-sm">
                     <code>{project.starterCode}</code>
                   </pre>

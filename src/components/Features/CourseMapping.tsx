@@ -23,13 +23,13 @@ const CourseMapping: React.FC = () => {
   return (
     <div className="p-6">
       <div className="max-w-5xl mx-auto">
-        <h1 className="text-2xl font-bold text-gray-900 mb-2">Course → Career Path Mapping</h1>
-        <p className="text-gray-600 mb-6">Explore what common undergraduate degrees can lead to.</p>
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">Course → Career Path Mapping</h1>
+        <p className="text-gray-600 dark:text-gray-300 mb-6">Explore what common undergraduate degrees can lead to.</p>
         <div className="grid md:grid-cols-2 gap-6">
           {data.map((d) => (
-            <div key={d.degree} className="bg-white rounded-xl border border-gray-200 p-5">
-              <h2 className="font-semibold text-gray-900 mb-3">{d.degree}</h2>
-              <ul className="list-disc list-inside text-gray-800 space-y-1">
+            <div key={d.degree} className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-5">
+              <h2 className="font-semibold text-gray-900 dark:text-gray-100 mb-3">{d.degree}</h2>
+              <ul className="list-disc list-inside text-gray-800 dark:text-gray-100 space-y-1">
                 {d.paths.map((p) => (
                   <li key={p}>{p}</li>
                 ))}
