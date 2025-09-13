@@ -11,7 +11,9 @@ import {
   CalendarDays,
   UserCircle2,
   Sparkles,
-  LayoutDashboard
+  LayoutDashboard,
+  BookOpen,
+  GraduationCap
 } from 'lucide-react';
 
 interface SidebarProps {
@@ -29,9 +31,10 @@ const menuItems = [
   { id: 'quiz', icon: ListChecks, label: 'Aptitude & Interest Quiz' },
   { id: 'mapping', icon: School, label: 'Course → Career Mapping' },
   { id: 'colleges', icon: Map, label: 'Government Colleges' },
+  { id: 'resources', icon: BookOpen, label: 'Career Resources' },
+  { id: 'scholarships', icon: GraduationCap, label: 'Scholarships' },
   { id: 'timeline', icon: CalendarDays, label: 'Timeline Tracker' },
   { id: 'profile', icon: UserCircle2, label: 'Profile' },
-  { id: 'recommendations', icon: Sparkles, label: 'Recommendations' },
   { id: 'mentor', icon: UserCircle2, label: 'Mentor Portal' },
 ];
 
@@ -76,8 +79,6 @@ const Sidebar: React.FC<SidebarProps> = ({ activeSection, setActiveSection }) =>
           })}
         </ul>
       </nav>
-
-      
     </div>
   );
 };

@@ -2,6 +2,49 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Leaflet map styles */
+.leaflet-container {
+  height: 100%;
+  width: 100%;
+  z-index: 1;
+}
+
+/* Fix for Leaflet popup z-index in dark mode */
+.leaflet-popup-content-wrapper {
+  @apply bg-white dark:bg-gray-800;
+}
+
+.leaflet-popup-content {
+  @apply text-gray-900 dark:text-gray-100;
+}
+
+.leaflet-popup-tip {
+  @apply bg-white dark:bg-gray-800;
+}
+
+/* Ensure map markers are visible */
+.leaflet-marker-icon {
+  margin-left: -12px !important;
+  margin-top: -41px !important;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-gray-100 dark:bg-gray-800;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-gray-300 dark:bg-gray-600 rounded-full;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-gray-400 dark:bg-gray-500;
+}
+
 html, body, #root {
   height: 100%;
 }

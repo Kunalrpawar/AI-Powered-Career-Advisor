@@ -20,6 +20,8 @@ import TimelineTracker from './components/Features/TimelineTracker';
 import Profile from './components/Features/Profile';
 import Recommendations from './components/Features/Recommendations';
 import MentorPortal from './components/Features/MentorPortal';
+import CareerResources from './components/Features/CareerResources';
+import Scholarships from './components/Features/Scholarships';
 
 function AppContent() {
   const { user, loading } = useAuth();
@@ -90,6 +92,10 @@ function AppContent() {
         return <CourseMapping />;
       case 'colleges':
         return <CollegesDirectory />;
+      case 'resources':
+        return <CareerResources />;
+      case 'scholarships':
+        return <Scholarships />;
       case 'timeline':
         return <TimelineTracker />;
       case 'profile':
