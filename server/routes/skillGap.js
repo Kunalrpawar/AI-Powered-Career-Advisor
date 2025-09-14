@@ -1,11 +1,30 @@
 import express from 'express';
 import multer from 'multer';
 import jwt from 'jsonwebtoken';
+import mammoth from 'mammoth';
 import { generateResponse } from '../config/gemini.js';
 import UserEvent from '../schema/UserEvent.js';
 
 const router = express.Router();
-const upload = multer({ storage: multer.memoryStorage() });
+const upload = multer({ 
+  storage: multer.memoryStorage(),
+  limits: {
+    fileSize: 10 * 1024 * 1024, // 10MB limit
+  },
+  fileFilter: (req, file, cb) => {
+    // Accept PDF, DOC, DOCX files
+    const allowedTypes = [
+      'application/pdf',
+      'application/msword',
+      'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+    ];
+    if (allowedTypes.includes(file.mimetype)) {
+      cb(null, true);
+    } else {
+      cb(new Error('Invalid file type. Only PDF, DOC, and DOCX files are allowed.'));
+    }
+  }
+});
 
 function tryGetUserId(req) {
   try {
@@ -15,6 +34,86 @@ function tryGetUserId(req) {
     const payload = jwt.verify(token, process.env.JWT_SECRET || 'dev-secret-change-me');
     return payload.userId || null;
   } catch (_) { return null; }
+}
+
+// Extract text from uploaded file
+async function extractTextFromFile(file) {
+  try {
+    const buffer = file.buffer;
+    const mimetype = file.mimetype;
+    
+    if (mimetype === 'application/pdf') {
+      // For now, return a placeholder message for PDF files
+      // We'll implement PDF parsing later with a different library
+      return `PDF file uploaded: ${file.originalname}. Please note: PDF text extraction is temporarily disabled. For better results, please convert your resume to DOCX format or enter your skills manually.`;
+    } else if (mimetype === 'application/msword' || 
+               mimetype === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document') {
+      // Extract text from DOC/DOCX
+      const result = await mammoth.extractRawText({ buffer });
+      return result.value;
+    } else {
+      throw new Error(`Unsupported file type: ${mimetype}`);
+    }
+  } catch (error) {
+    console.error('Error extracting text from file:', error);
+    throw new Error('Failed to extract text from file. Please ensure the file is not corrupted.');
+  }
+}
+
+// Enhanced skill extraction function
+function extractSkillsFromText(text) {
+  const skillKeywords = [
+    // Programming Languages
+    'javascript', 'java', 'python', 'c++', 'c#', 'php', 'ruby', 'go', 'rust', 'swift', 'kotlin',
+    'typescript', 'scala', 'r', 'matlab', 'perl', 'shell', 'bash', 'powershell',
+    
+    // Frontend Technologies
+    'react', 'angular', 'vue', 'html', 'css', 'sass', 'scss', 'less', 'bootstrap', 'tailwind',
+    'jquery', 'redux', 'mobx', 'webpack', 'babel', 'next.js', 'nuxt.js', 'gatsby',
+    
+    // Backend Technologies
+    'node.js', 'express', 'django', 'flask', 'spring', 'laravel', 'rails', 'asp.net',
+    'fastapi', 'nestjs', 'koa', 'hapi', 'restify',
+    
+    // Databases
+    'mysql', 'postgresql', 'mongodb', 'redis', 'elasticsearch', 'sqlite', 'oracle',
+    'sql server', 'dynamodb', 'cassandra', 'neo4j', 'firebase',
+    
+    // Cloud & DevOps
+    'aws', 'azure', 'gcp', 'docker', 'kubernetes', 'jenkins', 'gitlab', 'github actions',
+    'terraform', 'ansible', 'chef', 'puppet', 'vagrant', 'ci/cd', 'devops',
+    
+    // Mobile Development
+    'react native', 'flutter', 'ionic', 'xamarin', 'android', 'ios', 'swift ui',
+    
+    // Data Science & AI
+    'machine learning', 'deep learning', 'tensorflow', 'pytorch', 'scikit-learn',
+    'pandas', 'numpy', 'matplotlib', 'seaborn', 'jupyter', 'data analysis', 'big data',
+    'apache spark', 'hadoop', 'kafka', 'airflow',
+    
+    // Testing
+    'jest', 'mocha', 'chai', 'cypress', 'selenium', 'puppeteer', 'unit testing',
+    'integration testing', 'e2e testing', 'tdd', 'bdd',
+    
+    // Version Control
+    'git', 'github', 'gitlab', 'bitbucket', 'svn', 'mercurial',
+    
+    // Soft Skills
+    'leadership', 'teamwork', 'communication', 'problem solving', 'project management',
+    'agile', 'scrum', 'kanban', 'waterfall'
+  ];
+  
+  const extractedSkills = [];
+  const normalizedText = text.toLowerCase();
+  
+  for (const skill of skillKeywords) {
+    if (normalizedText.includes(skill.toLowerCase())) {
+      extractedSkills.push(skill);
+    }
+  }
+  
+  // Remove duplicates and return unique skills
+  return [...new Set(extractedSkills)];
 }
 
 // Enhanced skill analysis with structured prompts
@@ -262,16 +361,47 @@ router.post('/analyze', upload.single('resume'), async (req, res) => {
     });
 
     if (req.file) {
-      // For resume upload, we'd need to extract text from PDF/DOC
-      // For now, we'll use a placeholder approach
-      const resumeText = `Resume uploaded: ${req.file.originalname}`;
-      const prompt = generateSkillAnalysisPrompt(resumeText, true);
-      const response = await generateResponse(prompt);
-      
-      if (response.demo) {
-        analysisResult = response.mockResponse;
-      } else {
-        analysisResult = parseAIResponse(response.data);
+      // Extract text from uploaded resume file
+      try {
+        const resumeText = await extractTextFromFile(req.file);
+        console.log('Extracted text length:', resumeText.length);
+        
+        // Extract skills using keyword matching
+        const extractedSkills = extractSkillsFromText(resumeText);
+        console.log('Extracted skills:', extractedSkills);
+        
+        // Generate comprehensive analysis prompt with actual resume content
+        const prompt = generateSkillAnalysisPrompt(resumeText, true);
+        const response = await generateResponse(prompt);
+        
+        if (response.demo) {
+          // In demo mode, use mock response but include extracted skills
+          analysisResult = {
+            ...response.mockResponse,
+            extractedSkills: extractedSkills,
+            skillBreakdown: {
+              ...response.mockResponse.skillBreakdown,
+              extractedFromResume: {
+                score: Math.min(90, 50 + extractedSkills.length * 3),
+                skills: extractedSkills.slice(0, 10),
+                missing: [],
+                priority: 'High',
+                marketDemand: 'High',
+                learningCurve: 'Easy'
+              }
+            }
+          };
+        } else {
+          analysisResult = parseAIResponse(response.data);
+          // Add extracted skills to the result
+          analysisResult.extractedSkills = extractedSkills;
+        }
+      } catch (fileError) {
+        console.error('File processing error:', fileError);
+        return res.status(400).json({ 
+          error: 'Failed to process resume file',
+          details: fileError.message
+        });
       }
     } else if (skills && skills.trim()) {
       const prompt = generateSkillAnalysisPrompt(skills, false);

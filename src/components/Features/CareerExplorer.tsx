@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Map, Compass, TrendingUp, DollarSign, Clock, ChevronDown, ChevronUp, Upload, FileText, X, CheckCircle } from 'lucide-react';
+import { Map, Compass, TrendingUp, DollarSign, Clock, ChevronDown, ChevronUp, Upload, FileText, X, CheckCircle, Building, MapPin, ExternalLink } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 
 const CareerExplorer: React.FC = () => {
@@ -52,8 +52,13 @@ const CareerExplorer: React.FC = () => {
             allSkills.push(...category.skills);
           }
         });
-        setExtractedSkills(allSkills);
-        setCurrentSkills(allSkills.join(', '));
+        // Also include directly extracted skills from resume
+        if (result.analysis.extractedSkills) {
+          allSkills.push(...result.analysis.extractedSkills);
+        }
+        const uniqueSkills = [...new Set(allSkills)];
+        setExtractedSkills(uniqueSkills);
+        setCurrentSkills(uniqueSkills.join(', '));
       }
       
       // Set interests based on skills
@@ -151,13 +156,26 @@ const CareerExplorer: React.FC = () => {
       
       // Use extracted skills if available, otherwise use manually entered skills
       const skillsToUse = extractedSkills.length > 0 ? extractedSkills.join(', ') : currentSkills;
-      const q = [interests, skillsToUse].filter(Boolean).join(' ').trim();
+      const queryParts = [interests, skillsToUse].filter(Boolean);
+      const q = queryParts.join(' ').trim() || 'software developer';
       
-      const resp = await fetch(`/api/career/jobs?q=${encodeURIComponent(q)}&country=IN`);
-      if (!resp.ok) throw new Error('Failed to fetch jobs');
+      console.log('Fetching jobs with query:', q);
+      
+      const resp = await fetch(`/api/career/jobs?q=${encodeURIComponent(q)}&country=IN&limit=25`);
+      if (!resp.ok) {
+        const errorText = await resp.text();
+        throw new Error(`Failed to fetch jobs: ${errorText}`);
+      }
       const json = await resp.json();
-      if (Array.isArray(json?.jobs)) setJobs(json.jobs);
+      if (Array.isArray(json?.jobs)) {
+        console.log(`Received ${json.jobs.length} jobs`);
+        setJobs(json.jobs);
+      } else {
+        console.warn('No jobs found in response:', json);
+        setJobs([]);
+      }
     } catch (e: any) {
+      console.error('Job fetching error:', e);
       setError(e?.message || 'Failed to fetch jobs');
     } finally {
       setIsLoadingJobs(false);
@@ -342,23 +360,6 @@ const CareerExplorer: React.FC = () => {
           <div className="mb-4 bg-red-50 border border-red-200 text-red-700 px-4 py-2 rounded">{error}</div>
         )}
 
-        <button
-          onClick={handleExplore}
-          disabled={isExploring || !interests.trim() || (inputMode === 'resume' && extractedSkills.length === 0)}
-          className="w-full bg-green-600 text-white py-3 rounded-lg hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center space-x-2"
-        >
-          {isExploring ? (
-            <>
-              <Compass className="w-4 h-4 animate-spin" />
-              <span>Exploring Career Paths...</span>
-            </>
-          ) : (
-            <>
-              <Compass className="w-4 h-4" />
-              <span>Explore Career Paths</span>
-            </>
-          )}
-        </button>
         <div className="mt-3">
           <button
             onClick={fetchJobs}
@@ -465,20 +466,84 @@ const CareerExplorer: React.FC = () => {
       {/* Real Jobs */}
       {jobs.length > 0 && (
         <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6">
-          <h3 className="text-xl font-semibold text-gray-800 dark:text-gray-100 mb-4">Real Jobs</h3>
-          <div className="space-y-3">
-            {jobs.map((j) => (
-              <a key={j.id} href={j.url} target="_blank" rel="noreferrer" className="block p-3 rounded-lg border border-gray-200 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700/50">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="font-medium text-gray-900 dark:text-gray-100">{j.title}</p>
-                    <p className="text-sm text-gray-600 dark:text-gray-300">{j.company} • {j.location || 'Remote'}</p>
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-xl font-semibold text-gray-800 dark:text-gray-100">Real Job Opportunities</h3>
+            <span className="bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 px-3 py-1 rounded-full text-sm font-medium">
+              {jobs.length} Jobs Found
+            </span>
+          </div>
+          <div className="space-y-4">
+            {jobs.map((job) => (
+              <div key={job.id} className="border border-gray-200 dark:border-gray-600 rounded-lg p-4 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
+                <div className="flex items-start justify-between">
+                  <div className="flex-1">
+                    <div className="flex items-center space-x-2 mb-2">
+                      <h4 className="font-semibold text-gray-900 dark:text-gray-100">{job.title}</h4>
+                      {job.source && (
+                        <span className="bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400 px-2 py-1 rounded text-xs">
+                          {job.source}
+                        </span>
+                      )}
+                    </div>
+                    <div className="flex items-center space-x-4 text-sm text-gray-600 dark:text-gray-300 mb-2">
+                      <span className="flex items-center">
+                        <Building className="w-4 h-4 mr-1" />
+                        {job.company}
+                      </span>
+                      <span className="flex items-center">
+                        <MapPin className="w-4 h-4 mr-1" />
+                        {job.location || 'Remote'}
+                      </span>
+                      {job.salary && (
+                        <span className="flex items-center">
+                          <DollarSign className="w-4 h-4 mr-1" />
+                          {job.salary}
+                        </span>
+                      )}
+                    </div>
+                    {job.description && (
+                      <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">{job.description}</p>
+                    )}
+                    {job.tags && job.tags.length > 0 && (
+                      <div className="flex flex-wrap gap-1 mb-3">
+                        {job.tags.slice(0, 5).map((tag: string, index: number) => (
+                          <span key={index} className="bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 px-2 py-1 rounded text-xs">
+                            {tag}
+                          </span>
+                        ))}
+                      </div>
+                    )}
                   </div>
-                  <span className="text-xs text-gray-500 dark:text-gray-400">{j.publishedAt ? new Date(j.publishedAt).toLocaleDateString() : ''}</span>
+                  <div className="flex flex-col items-end space-y-2">
+                    {job.publishedAt && (
+                      <span className="text-xs text-gray-500 dark:text-gray-400">
+                        {new Date(job.publishedAt).toLocaleDateString()}
+                      </span>
+                    )}
+                    <a 
+                      href={job.url} 
+                      target="_blank" 
+                      rel="noreferrer" 
+                      className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium flex items-center"
+                    >
+                      <ExternalLink className="w-4 h-4 mr-1" />
+                      Apply Now
+                    </a>
+                  </div>
                 </div>
-              </a>
+              </div>
             ))}
           </div>
+          {jobs.length >= 20 && (
+            <div className="mt-4 text-center">
+              <button 
+                onClick={fetchJobs}
+                className="text-blue-600 dark:text-blue-400 hover:underline font-medium"
+              >
+                Load More Jobs
+              </button>
+            </div>
+          )}
         </div>
       )}
     </div>
