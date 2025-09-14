@@ -49,9 +49,16 @@ html, body, #root {
   height: 100%;
 }
 
-/* Prevent double scrollbars and let the app manage scrolling */
+/* Prevent double scrollbars for dashboard, but allow scrolling for homepage */
 body {
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+/* For dashboard layout only */
+.dashboard-layout {
   overflow: hidden;
+  height: 100vh;
 }
 
 @layer base {
@@ -70,6 +77,15 @@ body {
   }
   50% {
     background-position: 100% 50%;
+  }
+}
+
+@keyframes gradient-x {
+  0%, 100% {
+    transform: translateX(0%);
+  }
+  50% {
+    transform: translateX(100%);
   }
 }
 
@@ -144,10 +160,75 @@ body {
   }
 }
 
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(60px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes bounceIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.3);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.05);
+  }
+  70% {
+    transform: scale(0.9);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+@keyframes heartbeat {
+  0% {
+    transform: scale(1);
+  }
+  14% {
+    transform: scale(1.1);
+  }
+  28% {
+    transform: scale(1);
+  }
+  42% {
+    transform: scale(1.1);
+  }
+  70% {
+    transform: scale(1);
+  }
+}
+
 /* Custom Utility Classes */
 .animate-gradient {
   background-size: 200% 200%;
   animation: gradient 3s ease infinite;
+}
+
+.animate-gradient-x {
+  background-size: 300% 300%;
+  animation: gradient 4s ease infinite;
+}
+
+.bg-300\% {
+  background-size: 300%;
 }
 
 .animate-float {
@@ -176,6 +257,24 @@ body {
 
 .animate-fade-in {
   animation: fadeIn 1s ease-out;
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 1s ease-out both;
+}
+
+.animate-bounce-in {
+  animation: bounceIn 1s ease-out;
+}
+
+.animate-shimmer {
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+  background-size: 200% 100%;
+  animation: shimmer 2s infinite;
+}
+
+.animate-heartbeat {
+  animation: heartbeat 2s ease-in-out infinite;
 }
 
 /* Smooth scrolling */

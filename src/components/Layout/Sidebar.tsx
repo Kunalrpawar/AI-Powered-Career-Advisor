@@ -22,7 +22,6 @@ interface SidebarProps {
 }
 
 const menuItems = [
-  { id: 'home', icon: Home, label: 'Home' },
   { id: 'dashboard', icon: LayoutDashboard, label: 'Dashboard' },
   { id: 'skillGap', icon: BarChart3, label: 'Skills & Career Tools' },
   // { id: 'chat', icon: MessageCircle, label: 'AI Mentor' },
