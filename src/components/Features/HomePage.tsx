@@ -30,28 +30,68 @@ const HomePage: React.FC<HomePageProps> = ({ onLoginClick, onRegisterClick }) =>
   const [isVisible, setIsVisible] = useState(false);
   const [currentSlide, setCurrentSlide] = useState(0);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const [currentTime, setCurrentTime] = useState(new Date());
+  const [activeUsers, setActiveUsers] = useState(1289);
+  const [statsCounter, setStatsCounter] = useState({ users: 45750, jobs: 23480, success: 94.7 });
+  const [currentFeature, setCurrentFeature] = useState(0);
 
   useEffect(() => {
     setIsVisible(true);
     
-    // Auto-rotate testimonial slides
-    const interval = setInterval(() => {
+    // Smooth testimonial rotation
+    const slideInterval = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % 3);
+    }, 5000);
+    
+    // Gentle time updates
+    const timeInterval = setInterval(() => {
+      setCurrentTime(new Date());
+    }, 30000); // Update every 30 seconds instead of every second
+    
+    // Smooth active users simulation
+    const usersInterval = setInterval(() => {
+      setActiveUsers(prev => {
+        const change = Math.floor(Math.random() * 6) - 3; // Smaller changes -3 to +3
+        return Math.max(1200, Math.min(1400, prev + change));
+      });
+    }, 8000); // Less frequent updates
+    
+    // Gentle statistics updates
+    const statsInterval = setInterval(() => {
+      setStatsCounter(prev => ({
+        users: Math.min(50000, prev.users + Math.floor(Math.random() * 20)), // Smaller increments
+        jobs: Math.min(25000, prev.jobs + Math.floor(Math.random() * 10)),
+        success: Math.min(98, prev.success + Math.random() * 0.05)
+      }));
+    }, 10000); // Less frequent updates
+    
+    // Smooth feature rotation
+    const featureInterval = setInterval(() => {
+      setCurrentFeature(prev => (prev + 1) % 6);
     }, 4000);
     
-    // Mouse move effect for hero parallax
+    // Optimized mouse tracking with throttling
+    let mouseTimeout: NodeJS.Timeout;
     const handleMouseMove = (e: MouseEvent) => {
-      setMousePosition({
-        x: (e.clientX / window.innerWidth) * 100,
-        y: (e.clientY / window.innerHeight) * 100
-      });
+      clearTimeout(mouseTimeout);
+      mouseTimeout = setTimeout(() => {
+        setMousePosition({
+          x: (e.clientX / window.innerWidth) * 100,
+          y: (e.clientY / window.innerHeight) * 100
+        });
+      }, 50); // Throttle mouse updates
     };
     
     window.addEventListener('mousemove', handleMouseMove);
     
     return () => {
-      clearInterval(interval);
+      clearInterval(slideInterval);
+      clearInterval(timeInterval);
+      clearInterval(usersInterval);
+      clearInterval(statsInterval);
+      clearInterval(featureInterval);
       window.removeEventListener('mousemove', handleMouseMove);
+      clearTimeout(mouseTimeout);
     };
   }, []);
 
@@ -103,99 +143,130 @@ const HomePage: React.FC<HomePageProps> = ({ onLoginClick, onRegisterClick }) =>
   return (
     <div className="w-full bg-gradient-to-br from-blue-50 via-white to-purple-50">
       {/* Notch Navigation Bar */}
-      <nav className="fixed top-3 left-1/2 transform -translate-x-1/2 z-50 bg-white/95 backdrop-blur-xl rounded-full shadow-lg border border-gray-200/30 px-6 py-1.5 transition-all duration-300 hover:shadow-xl hover:scale-105">
-        <div className="flex justify-between items-center max-w-5xl mx-auto">
+      <nav className="fixed top-3 left-1/2 transform -translate-x-1/2 z-50 bg-gradient-to-r from-white/95 via-blue-50/95 to-white/95 backdrop-blur-xl rounded-full shadow-2xl border-2 border-gradient-to-r from-blue-200/50 via-purple-200/50 to-blue-200/50 px-12 py-2 transition-all duration-500 hover:shadow-3xl hover:scale-105 hover:from-blue-50/95 hover:via-purple-50/95 hover:to-blue-50/95 w-full max-w-screen-xl">
+        <div className="flex justify-between items-center mx-auto">
             {/* Enhanced Logo */}
-            <div className="flex items-center space-x-2 group cursor-pointer">
+            <div className="flex items-center space-x-3 group cursor-pointer">
               <div className="relative">
-                <div className="w-7 h-7 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center transform transition-all duration-300 group-hover:scale-110 group-hover:rotate-3 shadow-md group-hover:shadow-lg">
-                  <Bot className="w-3.5 h-3.5 text-white transition-transform duration-300 group-hover:scale-110" />
+                <div className="w-10 h-10 bg-gradient-to-br from-blue-500 via-purple-500 to-indigo-600 rounded-full flex items-center justify-center transform transition-all duration-500 group-hover:scale-125 group-hover:rotate-12 shadow-xl group-hover:shadow-2xl animate-pulse">
+                  <Bot className="w-5 h-5 text-white transition-transform duration-500 group-hover:scale-110" />
                 </div>
-                {/* Animated glow effect */}
-                <div className="absolute inset-0 w-7 h-7 bg-gradient-to-br from-blue-400 to-purple-500 rounded-full blur-md opacity-0 group-hover:opacity-40 transition-opacity duration-500 -z-10"></div>
-                {/* Floating particles */}
-                <div className="absolute -top-0.5 -right-0.5 w-1 h-1 bg-blue-400 rounded-full opacity-0 group-hover:opacity-100 group-hover:animate-ping transition-all duration-300"></div>
+                {/* Enhanced glow effect */}
+                <div className="absolute inset-0 w-10 h-10 bg-gradient-to-br from-blue-400 via-purple-400 to-pink-400 rounded-full blur-lg opacity-0 group-hover:opacity-60 transition-opacity duration-700 -z-10 animate-pulse"></div>
+                {/* Multiple floating particles */}
+                <div className="absolute -top-1 -right-1 w-2 h-2 bg-gradient-to-r from-blue-400 to-cyan-400 rounded-full opacity-0 group-hover:opacity-100 group-hover:animate-ping transition-all duration-500"></div>
+                <div className="absolute -bottom-1 -left-1 w-1.5 h-1.5 bg-gradient-to-r from-purple-400 to-pink-400 rounded-full opacity-0 group-hover:opacity-100 group-hover:animate-ping transition-all duration-700" style={{animationDelay: '0.2s'}}></div>
+                <div className="absolute top-1/2 -right-2 w-1 h-1 bg-gradient-to-r from-indigo-400 to-blue-400 rounded-full opacity-0 group-hover:opacity-100 group-hover:animate-ping transition-all duration-600" style={{animationDelay: '0.4s'}}></div>
               </div>
-              <div className="transition-all duration-300 group-hover:translate-x-0.5 hidden sm:block">
-                <h1 className="text-sm font-bold text-gray-900 tracking-tight bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text group-hover:from-blue-600 group-hover:to-purple-600 transition-all duration-300 leading-none">AI Career Advisor</h1>
-                <p className="text-xs text-gray-500 group-hover:text-blue-500 transition-colors duration-300 leading-none">Your Career Companion</p>
+              <div className="transition-all duration-500 group-hover:translate-x-1 hidden sm:block">
+                <h1 className="text-lg font-bold text-transparent bg-gradient-to-r from-gray-900 via-blue-700 to-purple-700 bg-clip-text group-hover:from-blue-600 group-hover:via-purple-600 group-hover:to-indigo-600 transition-all duration-500 leading-none animate-gradient-x">
+                  AI Career Advisor
+                </h1>
+                <p className="text-sm text-gray-500 group-hover:text-transparent group-hover:bg-gradient-to-r group-hover:from-blue-500 group-hover:to-purple-500 group-hover:bg-clip-text transition-all duration-500 leading-none">
+                  Your Career Companion
+                </p>
               </div>
             </div>
 
             {/* Enhanced Navigation Links */}
-            <div className="hidden md:flex items-center space-x-1">
+            <div className="hidden md:flex items-center space-x-2">
               {[
-                { href: '#features', label: 'Features', icon: '✨' },
-                { href: '#programs', label: 'Programs', icon: '🎯' },
-                { href: '#how-it-works', label: 'How It Works', icon: '⚡' }
+                { href: '#features', label: 'Features', icon: '✨', color: 'from-blue-500 to-cyan-500' },
+                { href: '#programs', label: 'Programs', icon: '🎯', color: 'from-purple-500 to-pink-500' },
+                { href: '#how-it-works', label: 'How It Works', icon: '⚡', color: 'from-indigo-500 to-blue-500' }
               ].map((item, index) => (
                 <a 
                   key={item.href}
                   href={item.href} 
-                  className="group relative px-3 py-1 rounded-full text-gray-600 hover:text-blue-600 font-medium text-sm transition-all duration-300 hover:bg-blue-50/50 overflow-hidden"
+                  className="group relative px-4 py-2 rounded-full text-gray-700 hover:text-white font-semibold text-sm transition-all duration-500 hover:shadow-lg overflow-hidden transform hover:scale-110"
                   style={{animationDelay: `${index * 100}ms`}}
                 >
                   {/* Animated background */}
-                  <div className="absolute inset-0 bg-gradient-to-r from-blue-500/10 via-purple-500/10 to-pink-500/10 rounded-full scale-0 group-hover:scale-100 transition-transform duration-300"></div>
+                  <div className={`absolute inset-0 bg-gradient-to-r ${item.color} rounded-full scale-0 group-hover:scale-100 transition-transform duration-500 shadow-lg`}></div>
                   
                   {/* Icon and text */}
-                  <span className="relative flex items-center space-x-1 z-10">
-                    <span className="text-xs opacity-0 group-hover:opacity-100 transform scale-75 group-hover:scale-100 transition-all duration-300">{item.icon}</span>
-                    <span className="transform group-hover:translate-x-0.5 transition-transform duration-300">{item.label}</span>
+                  <span className="relative flex items-center space-x-2 z-10">
+                    <span className="text-lg opacity-70 group-hover:opacity-100 transform scale-75 group-hover:scale-100 transition-all duration-500 group-hover:animate-bounce">{item.icon}</span>
+                    <span className="transform group-hover:translate-x-0.5 transition-transform duration-500">{item.label}</span>
                   </span>
                   
                   {/* Underline animation */}
-                  <div className="absolute bottom-0 left-1/2 w-0 h-0.5 bg-gradient-to-r from-blue-500 to-purple-500 group-hover:w-3/4 group-hover:left-1/8 transition-all duration-300 rounded-full"></div>
+                  <div className={`absolute bottom-0 left-1/2 w-0 h-1 bg-gradient-to-r ${item.color} group-hover:w-3/4 group-hover:left-1/8 transition-all duration-500 rounded-full`}></div>
+                  
+                  {/* Glow effect */}
+                  <div className={`absolute inset-0 bg-gradient-to-r ${item.color} rounded-full blur-md opacity-0 group-hover:opacity-30 transition-opacity duration-500 -z-10`}></div>
                 </a>
               ))}
             </div>
 
             {/* Enhanced Auth Buttons */}
-            <div className="flex items-center space-x-2">
+            <div className="flex items-center space-x-3">
               {/* Sign In Button */}
               <button 
                 onClick={onLoginClick}
-                className="group relative px-4 py-1 text-gray-600 hover:text-blue-600 font-medium text-sm transition-all duration-300 rounded-full hover:bg-gray-50 overflow-hidden"
+                className="group relative px-6 py-2 text-gray-700 hover:text-white font-semibold text-sm transition-all duration-500 rounded-full overflow-hidden border-2 border-gray-300 hover:border-transparent transform hover:scale-110 hover:shadow-lg"
               >
-                <span className="relative z-10 flex items-center space-x-1 transform group-hover:scale-105 transition-transform duration-300">
-                  <span className="opacity-0 group-hover:opacity-100 transition-opacity duration-300 text-xs">👤</span>
+                <span className="relative z-10 flex items-center space-x-2 transform group-hover:scale-105 transition-transform duration-500">
+                  <span className="text-lg opacity-0 group-hover:opacity-100 transition-opacity duration-500 group-hover:animate-bounce">👤</span>
                   <span>Sign In</span>
                 </span>
                 {/* Hover background */}
-                <div className="absolute inset-0 bg-gradient-to-r from-gray-100 to-blue-50 rounded-full transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-center"></div>
+                <div className="absolute inset-0 bg-gradient-to-r from-gray-600 to-gray-700 rounded-full transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-center"></div>
+                {/* Glow effect */}
+                <div className="absolute inset-0 bg-gradient-to-r from-gray-400 to-gray-600 rounded-full blur-md opacity-0 group-hover:opacity-40 transition-opacity duration-500 -z-10"></div>
               </button>
               
               {/* Get Started Button */}
               <button 
                 onClick={onRegisterClick}
-                className="group relative bg-gradient-to-r from-blue-600 to-purple-600 text-white px-4 py-1 rounded-full font-medium text-sm hover:shadow-lg transform hover:scale-105 transition-all duration-300 overflow-hidden"
+                className="group relative bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 text-white px-6 py-2 rounded-full font-semibold text-sm hover:shadow-2xl transform hover:scale-110 transition-all duration-500 overflow-hidden animate-gradient-x bg-300%"
               >
                 {/* Animated background layers */}
-                <div className="absolute inset-0 bg-gradient-to-r from-purple-600 to-blue-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                <div className="absolute inset-0 bg-gradient-to-r from-purple-600 via-pink-500 to-blue-600 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                 
                 {/* Button content */}
-                <span className="relative z-10 flex items-center space-x-1">
-                  <span className="opacity-0 group-hover:opacity-100 transition-all duration-300 transform scale-75 group-hover:scale-100 text-xs">🚀</span>
-                  <span className="transform group-hover:translate-x-0.5 transition-transform duration-300">Get Started</span>
+                <span className="relative z-10 flex items-center space-x-2">
+                  <span className="text-lg opacity-0 group-hover:opacity-100 transition-all duration-500 transform scale-75 group-hover:scale-100 group-hover:animate-bounce">🚀</span>
+                  <span className="transform group-hover:translate-x-0.5 transition-transform duration-500">Get Started</span>
                 </span>
                 
                 {/* Shine effect */}
-                <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-r from-transparent via-white/20 to-transparent transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-700"></div>
+                <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-r from-transparent via-white/30 to-transparent transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
+                
+                {/* Glow effect */}
+                <div className="absolute inset-0 bg-gradient-to-r from-blue-400 via-purple-400 to-indigo-400 rounded-full blur-lg opacity-0 group-hover:opacity-50 transition-opacity duration-500 -z-10"></div>
               </button>
               
               {/* Mobile menu button (enhanced) */}
-              <button className="md:hidden group relative p-1 rounded-full hover:bg-gray-100 transition-all duration-300">
-                <div className="w-4 h-4 flex flex-col justify-center items-center space-y-0.5">
-                  <div className="w-2.5 h-0.5 bg-gray-600 group-hover:bg-blue-600 transition-all duration-300 transform group-hover:rotate-45 group-hover:translate-y-0.5"></div>
-                  <div className="w-2.5 h-0.5 bg-gray-600 group-hover:bg-blue-600 transition-all duration-300 group-hover:opacity-0"></div>
-                  <div className="w-2.5 h-0.5 bg-gray-600 group-hover:bg-blue-600 transition-all duration-300 transform group-hover:-rotate-45 group-hover:-translate-y-0.5"></div>
+              <button className="md:hidden group relative p-2 rounded-full hover:bg-gradient-to-r hover:from-blue-100 hover:to-purple-100 transition-all duration-500 border-2 border-transparent hover:border-blue-300 transform hover:scale-110">
+                <div className="w-5 h-5 flex flex-col justify-center items-center space-y-1">
+                  <div className="w-3 h-0.5 bg-gray-600 group-hover:bg-blue-600 transition-all duration-500 transform group-hover:rotate-45 group-hover:translate-y-1"></div>
+                  <div className="w-3 h-0.5 bg-gray-600 group-hover:bg-purple-600 transition-all duration-500 group-hover:opacity-0"></div>
+                  <div className="w-3 h-0.5 bg-gray-600 group-hover:bg-blue-600 transition-all duration-500 transform group-hover:-rotate-45 group-hover:-translate-y-1"></div>
                 </div>
               </button>
             </div>
         </div>
+        {/* Enhanced bottom border with animated gradient */}
+        <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-2/3 h-0.5 bg-gradient-to-r from-transparent via-blue-500/50 to-transparent opacity-0 hover:opacity-100 transition-opacity duration-700 rounded-full animate-pulse"></div>
         
-        {/* Enhanced bottom border with gradient animation */}
-        <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-1/2 h-px bg-gradient-to-r from-transparent via-blue-500/30 to-transparent opacity-0 hover:opacity-100 transition-opacity duration-500 rounded-full"></div>
+        {/* Real-time activity indicator */}
+        <div className="absolute -top-8 right-4 bg-green-500 text-white px-3 py-1 rounded-full text-xs font-medium animate-bounce shadow-lg">
+          <div className="flex items-center space-x-1">
+            <div className="w-2 h-2 bg-white rounded-full animate-ping"></div>
+            <span>{activeUsers.toLocaleString()} online now</span>
+          </div>
+        </div>
+        
+        {/* Live time display */}
+        <div className="absolute -top-8 left-4 bg-blue-500 text-white px-3 py-1 rounded-full text-xs font-medium shadow-lg">
+          {currentTime.toLocaleTimeString()}
+        </div>
+        
+        {/* Floating particles around navbar */}
+        <div className="absolute -top-2 left-1/4 w-1 h-1 bg-blue-400 rounded-full opacity-30 animate-ping" style={{animationDelay: '0s', animationDuration: '3s'}}></div>
+        <div className="absolute -top-1 right-1/3 w-0.5 h-0.5 bg-purple-400 rounded-full opacity-40 animate-ping" style={{animationDelay: '1s', animationDuration: '4s'}}></div>
+        <div className="absolute -bottom-2 right-1/4 w-1.5 h-1.5 bg-indigo-400 rounded-full opacity-25 animate-ping" style={{animationDelay: '2s', animationDuration: '5s'}}></div>
       </nav>
       
       {/* Hero Section */}
@@ -203,42 +274,61 @@ const HomePage: React.FC<HomePageProps> = ({ onLoginClick, onRegisterClick }) =>
         {/* Enhanced Background Elements with Parallax */}
         <div className="absolute inset-0">
           <div 
-            className="absolute top-20 left-20 w-96 h-96 bg-gradient-to-r from-blue-400 to-blue-600 rounded-full mix-blend-multiply filter blur-3xl opacity-20 transition-all duration-1000"
+            className="absolute top-20 left-20 w-96 h-96 bg-gradient-to-r from-blue-400 to-blue-600 rounded-full mix-blend-multiply filter blur-3xl opacity-20 transition-all duration-1000 animate-pulse"
             style={{
-              transform: `translate(${mousePosition.x * 0.02}px, ${mousePosition.y * 0.02}px)`
+              transform: `translate(${mousePosition.x * 0.01}px, ${mousePosition.y * 0.01}px)`,
             }}
           ></div>
           <div 
-            className="absolute top-40 right-20 w-96 h-96 bg-gradient-to-r from-purple-400 to-purple-600 rounded-full mix-blend-multiply filter blur-3xl opacity-20 transition-all duration-1000"
+            className="absolute top-40 right-20 w-96 h-96 bg-gradient-to-r from-purple-400 to-purple-600 rounded-full mix-blend-multiply filter blur-3xl opacity-20 transition-all duration-1000 animate-pulse"
             style={{
-              transform: `translate(${mousePosition.x * -0.02}px, ${mousePosition.y * -0.02}px)`
+              transform: `translate(${mousePosition.x * -0.01}px, ${mousePosition.y * -0.01}px)`,
+              animationDelay: '1s'
             }}
           ></div>
           <div 
-            className="absolute -bottom-8 left-40 w-96 h-96 bg-gradient-to-r from-indigo-400 to-indigo-600 rounded-full mix-blend-multiply filter blur-3xl opacity-20 transition-all duration-1000"
+            className="absolute -bottom-8 left-40 w-96 h-96 bg-gradient-to-r from-indigo-400 to-indigo-600 rounded-full mix-blend-multiply filter blur-3xl opacity-20 transition-all duration-1000 animate-pulse"
             style={{
-              transform: `translate(${mousePosition.x * 0.015}px, ${mousePosition.y * 0.015}px)`
+              transform: `translate(${mousePosition.x * 0.008}px, ${mousePosition.y * 0.008}px)`,
+              animationDelay: '2s'
             }}
           ></div>
           <div 
-            className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-80 h-80 bg-gradient-to-r from-cyan-400 to-cyan-600 rounded-full mix-blend-multiply filter blur-3xl opacity-15 transition-all duration-1000"
+            className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-80 h-80 bg-gradient-to-r from-cyan-400 to-cyan-600 rounded-full mix-blend-multiply filter blur-3xl opacity-15 transition-all duration-1000 animate-pulse"
             style={{
-              transform: `translate(calc(-50% + ${mousePosition.x * -0.01}px), calc(-50% + ${mousePosition.y * -0.01}px))`
+              transform: `translate(calc(-50% + ${mousePosition.x * -0.005}px), calc(-50% + ${mousePosition.y * -0.005}px))`,
+              animationDelay: '0.5s'
             }}
           ></div>
         </div>
 
         {/* Enhanced Floating Elements */}
         <div className="absolute inset-0 overflow-hidden">
-          <div className="absolute top-32 left-16 w-4 h-4 bg-blue-500 rounded-full animate-bounce opacity-60"></div>
-          <div className="absolute top-48 right-32 w-3 h-3 bg-purple-500 rounded-full animate-bounce opacity-60" style={{animationDelay: '0.5s'}}></div>
-          <div className="absolute bottom-32 left-1/4 w-2 h-2 bg-indigo-500 rounded-full animate-bounce opacity-60" style={{animationDelay: '1s'}}></div>
-          <div className="absolute top-1/3 right-1/4 w-3 h-3 bg-cyan-500 rounded-full animate-bounce opacity-60" style={{animationDelay: '1.5s'}}></div>
+          {/* Simplified floating particles */}
+          {[...Array(8)].map((_, i) => (
+            <div
+              key={i}
+              className={`absolute w-2 h-2 rounded-full opacity-30 animate-bounce`}
+              style={{
+                backgroundColor: ['#3B82F6', '#8B5CF6', '#06B6D4', '#10B981'][i % 4],
+                top: `${20 + (i * 10)}%`,
+                left: `${15 + (i * 12)}%`,
+                animationDelay: `${i * 0.5}s`,
+                animationDuration: `${3 + (i % 3)}s`,
+              }}
+            />
+          ))}
           
-          {/* New animated shapes */}
-          <div className="absolute top-1/4 left-3/4 w-6 h-6 border-2 border-pink-400 rounded-full animate-spin opacity-40" style={{animationDuration: '8s'}}></div>
-          <div className="absolute bottom-1/4 right-1/3 w-4 h-4 bg-yellow-400 transform rotate-45 animate-pulse opacity-50"></div>
-          <div className="absolute top-3/4 left-1/3 w-5 h-5 border-2 border-green-400 transform rotate-45 animate-bounce opacity-40" style={{animationDelay: '2s'}}></div>
+          {/* Static elegant shapes */}
+          <div className="absolute top-32 left-16 w-4 h-4 bg-blue-500 rounded-full animate-pulse opacity-40"></div>
+          <div className="absolute top-48 right-32 w-3 h-3 bg-purple-500 rounded-full animate-pulse opacity-40" style={{animationDelay: '1s'}}></div>
+          <div className="absolute bottom-32 left-1/4 w-2 h-2 bg-indigo-500 rounded-full animate-pulse opacity-40" style={{animationDelay: '2s'}}></div>
+          <div className="absolute top-1/3 right-1/4 w-3 h-3 bg-cyan-500 rounded-full animate-pulse opacity-40" style={{animationDelay: '1.5s'}}></div>
+          
+          {/* Clean animated shapes */}
+          <div className="absolute top-1/4 left-3/4 w-6 h-6 border-2 border-pink-400 rounded-full animate-spin opacity-30" style={{animationDuration: '10s'}}></div>
+          <div className="absolute bottom-1/4 right-1/3 w-4 h-4 bg-yellow-400 transform rotate-45 animate-pulse opacity-40"></div>
+          <div className="absolute top-3/4 left-1/3 w-5 h-5 border-2 border-green-400 transform rotate-45 animate-bounce opacity-30" style={{animationDelay: '2s', animationDuration: '4s'}}></div>
         </div>
 
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex-1 flex items-center">
@@ -250,6 +340,9 @@ const HomePage: React.FC<HomePageProps> = ({ onLoginClick, onRegisterClick }) =>
                 <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent font-bold">
                   AI-Powered Career Guidance Platform
                 </span>
+                <div className="ml-2 px-2 py-1 bg-green-100 text-green-700 rounded-full text-xs font-bold animate-bounce">
+                  LIVE
+                </div>
               </div>
 
               {/* Enhanced Title with Gradient Animation */}
@@ -302,35 +395,29 @@ const HomePage: React.FC<HomePageProps> = ({ onLoginClick, onRegisterClick }) =>
               <div className="mb-6 animate-fade-in-up" style={{animationDelay: '1.5s'}}>
                 <div className="bg-white/70 backdrop-blur-sm rounded-2xl p-4 border border-white/30 shadow-lg hover:shadow-xl transition-all duration-500">
                   <div className="flex flex-wrap justify-center items-center gap-4 text-gray-700 text-sm font-medium">
-                    <div className="flex items-center gap-2 hover:scale-110 transition-transform duration-300">
-                      <CheckCircle className="w-4 h-4 text-green-500 animate-pulse" />
-                      <span>Career Assessment</span>
-                    </div>
-                    <div className="w-1 h-1 bg-gray-400 rounded-full animate-pulse"></div>
-                    <div className="flex items-center gap-2 hover:scale-110 transition-transform duration-300">
-                      <CheckCircle className="w-4 h-4 text-green-500 animate-pulse" style={{animationDelay: '0.5s'}} />
-                      <span>AI-Powered Guidance</span>
-                    </div>
-                    <div className="w-1 h-1 bg-gray-400 rounded-full animate-pulse"></div>
-                    <div className="flex items-center gap-2 hover:scale-110 transition-transform duration-300">
-                      <CheckCircle className="w-4 h-4 text-green-500 animate-pulse" style={{animationDelay: '1s'}} />
-                      <span>Skill Gap Analysis</span>
-                    </div>
-                    <div className="w-1 h-1 bg-gray-400 rounded-full animate-pulse"></div>
-                    <div className="flex items-center gap-2 hover:scale-110 transition-transform duration-300">
-                      <CheckCircle className="w-4 h-4 text-green-500 animate-pulse" style={{animationDelay: '1.5s'}} />
-                      <span>Job Matching</span>
-                    </div>
-                    <div className="w-1 h-1 bg-gray-400 rounded-full animate-pulse"></div>
-                    <div className="flex items-center gap-2 hover:scale-110 transition-transform duration-300">
-                      <CheckCircle className="w-4 h-4 text-green-500 animate-pulse" style={{animationDelay: '2s'}} />
-                      <span>Interview Prep</span>
-                    </div>
-                    <div className="w-1 h-1 bg-gray-400 rounded-full animate-pulse"></div>
-                    <div className="flex items-center gap-2 hover:scale-110 transition-transform duration-300">
-                      <CheckCircle className="w-4 h-4 text-green-500 animate-pulse" style={{animationDelay: '2.5s'}} />
-                      <span>Project Generator</span>
-                    </div>
+                    {[
+                      { name: 'Career Assessment', icon: '📊' },
+                      { name: 'AI-Powered Guidance', icon: '🤖' },
+                      { name: 'Skill Gap Analysis', icon: '📈' },
+                      { name: 'Job Matching', icon: '💼' },
+                      { name: 'Interview Prep', icon: '🎤' },
+                      { name: 'Project Generator', icon: '🚀' }
+                    ].map((service, index) => (
+                      <div 
+                        key={service.name}
+                        className={`flex items-center gap-2 hover:scale-110 transition-transform duration-300 ${
+                          index === currentFeature ? 'text-blue-600 font-bold transform scale-110' : ''
+                        }`}
+                      >
+                        <span className="animate-bounce" style={{animationDelay: `${index * 0.2}s`}}>
+                          {service.icon}
+                        </span>
+                        <span>{service.name}</span>
+                        {index === currentFeature && (
+                          <div className="w-2 h-2 bg-green-500 rounded-full animate-ping ml-1"></div>
+                        )}
+                      </div>
+                    ))}
                   </div>
                 </div>
               </div>

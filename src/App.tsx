@@ -26,7 +26,7 @@ import Scholarships from './components/Features/Scholarships';
 function AppContent() {
   const { user, loading } = useAuth();
   const [activeSection, setActiveSection] = useState('dashboard');
-  const [currentView, setCurrentView] = useState<'home' | 'auth'>('home');
+  const [currentView, setCurrentView] = useState<'home' | 'auth' | 'dashboard'>('home');
   const [showRegister, setShowRegister] = useState(false);
 
   if (loading) {
@@ -35,60 +35,6 @@ function AppContent() {
         <div className="flex items-center space-x-3 text-gray-600">
           <div className="w-4 h-4 rounded-full border-2 border-blue-600 border-t-transparent animate-spin" />
           <span>Loading...</span>
-        </div>
-      </div>
-    );
-  }
-
-  // If user is not authenticated, show homepage or auth page
-  if (!user) {
-    if (currentView === 'home') {
-      return (
-        <HomePage 
-          onLoginClick={() => {
-            setShowRegister(false);
-            setCurrentView('auth');
-          }}
-          onRegisterClick={() => {
-            setShowRegister(true);
-            setCurrentView('auth');
-          }}
-        />
-      );
-    }
-
-    // Auth view
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 flex items-center justify-center p-4">
-        <div className="w-full max-w-5xl grid md:grid-cols-2 gap-8 items-center">
-          <div className="hidden md:block">
-            <div className="bg-white/60 backdrop-blur rounded-2xl p-8 shadow border border-gray-100">
-              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-600 to-purple-600 flex items-center justify-center text-white font-bold mb-4">HG</div>
-              <h1 className="text-3xl font-bold text-gray-900 mb-2">AI Career Advisor</h1>
-              <p className="text-gray-600 mb-6">Your AI-powered companion for skill growth, projects, interviews, and jobs.</p>
-              <ul className="space-y-3 text-gray-700">
-                <li className="flex items-center space-x-2"><span className="w-1.5 h-1.5 bg-blue-600 rounded-full" />
-                  <span>Analyze your skill gaps and get personalized roadmaps</span></li>
-                <li className="flex items-center space-x-2"><span className="w-1.5 h-1.5 bg-purple-600 rounded-full" />
-                  <span>Generate projects and prepare for interviews</span></li>
-                <li className="flex items-center space-x-2"><span className="w-1.5 h-1.5 bg-pink-600 rounded-full" />
-                  <span>Match with relevant jobs in real-time</span></li>
-              </ul>
-              <button 
-                onClick={() => setCurrentView('home')}
-                className="mt-6 text-blue-600 hover:text-blue-800 font-medium text-sm transition-colors flex items-center"
-              >
-                ← Back to Homepage
-              </button>
-            </div>
-          </div>
-          <div>
-            {showRegister ? (
-              <Register onSwitchToLogin={() => setShowRegister(false)} />
-            ) : (
-              <Login onSwitchToRegister={() => setShowRegister(true)} />
-            )}
-          </div>
         </div>
       </div>
     );
@@ -131,12 +77,88 @@ function AppContent() {
     }
   };
 
+  // If user is authenticated, check current view
+  if (user) {
+    // If user wants to go to homepage while authenticated
+    if (currentView === 'home') {
+      return (
+        <HomePage 
+          onLoginClick={() => {
+            setShowRegister(false);
+            setCurrentView('auth');
+          }}
+          onRegisterClick={() => {
+            setShowRegister(true);
+            setCurrentView('auth');
+          }}
+        />
+      );
+    }
+
+    // Show dashboard for authenticated users
+    return (
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 dashboard-layout">
+        <Sidebar 
+          activeSection={activeSection} 
+          setActiveSection={setActiveSection}
+          onHomeClick={() => setCurrentView('home')}
+        />
+        <div className="ml-64 h-screen flex flex-col">
+          <Header setActiveSection={setActiveSection} />
+          <main className="flex-1 overflow-y-auto min-h-0">{renderActiveSection()}</main>
+        </div>
+      </div>
+    );
+  }
+
+  // If user is not authenticated, show homepage or auth page
+  if (currentView === 'home') {
+    return (
+      <HomePage 
+        onLoginClick={() => {
+          setShowRegister(false);
+          setCurrentView('auth');
+        }}
+        onRegisterClick={() => {
+          setShowRegister(true);
+          setCurrentView('auth');
+        }}
+      />
+    );
+  }
+
+  // Auth view
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 dashboard-layout">
-      <Sidebar activeSection={activeSection} setActiveSection={setActiveSection} />
-      <div className="ml-64 h-screen flex flex-col">
-        <Header setActiveSection={setActiveSection} />
-        <main className="flex-1 overflow-y-auto min-h-0">{renderActiveSection()}</main>
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 flex items-center justify-center p-4">
+      <div className="w-full max-w-5xl grid md:grid-cols-2 gap-8 items-center">
+        <div className="hidden md:block">
+          <div className="bg-white/60 backdrop-blur rounded-2xl p-8 shadow border border-gray-100">
+            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-600 to-purple-600 flex items-center justify-center text-white font-bold mb-4">HG</div>
+            <h1 className="text-3xl font-bold text-gray-900 mb-2">AI Career Advisor</h1>
+            <p className="text-gray-600 mb-6">Your AI-powered companion for skill growth, projects, interviews, and jobs.</p>
+            <ul className="space-y-3 text-gray-700">
+              <li className="flex items-center space-x-2"><span className="w-1.5 h-1.5 bg-blue-600 rounded-full" />
+                <span>Analyze your skill gaps and get personalized roadmaps</span></li>
+              <li className="flex items-center space-x-2"><span className="w-1.5 h-1.5 bg-purple-600 rounded-full" />
+                <span>Generate projects and prepare for interviews</span></li>
+              <li className="flex items-center space-x-2"><span className="w-1.5 h-1.5 bg-pink-600 rounded-full" />
+                <span>Match with relevant jobs in real-time</span></li>
+            </ul>
+            <button 
+              onClick={() => setCurrentView('home')}
+              className="mt-6 text-blue-600 hover:text-blue-800 font-medium text-sm transition-colors flex items-center"
+            >
+              ← Back to Homepage
+            </button>
+          </div>
+        </div>
+        <div>
+          {showRegister ? (
+            <Register onSwitchToLogin={() => setShowRegister(false)} />
+          ) : (
+            <Login onSwitchToRegister={() => setShowRegister(true)} />
+          )}
+        </div>
       </div>
     </div>
   );
