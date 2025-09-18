@@ -1,0 +1,31 @@
+{
+  "analysis_date": "2025-09-18 19:23:21",
+  "career_dataset": {
+    "original_shape": [
+      9000,
+      17
+    ],
+    "cleaned_shape": [
+      9000,
+      19
+    ],
+    "unique_fields": 15,
+    "unique_careers": 90
+  },
+  "skills_dataset": {
+    "original_shape": [
+      3999,
+      21
+    ],
+    "cleaned_shape": [
+      3602,
+      26
+    ],
+    "intelligence_types": 8
+  },
+  "ml_results": {
+    "best_model": "Random Forest",
+    "best_accuracy": 0.065,
+    "models_trained": 3
+  }
+}
