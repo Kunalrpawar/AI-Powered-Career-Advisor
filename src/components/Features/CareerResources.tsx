@@ -65,7 +65,7 @@ const mockVideos: VideoResource[] = [
   },
   {
     id: '2',
-    title: 'Government Job Preparation Strategy 2024',
+    title: 'Government Job Preparation Strategy ',
     channel: 'StudyIQ IAS',
     description: 'Step-by-step preparation guide for government exams including SSC, Banking, and Railway jobs.',
     duration: '38:15',
@@ -73,7 +73,7 @@ const mockVideos: VideoResource[] = [
     likes: '32K',
     publishedAt: '2024-02-01',
     thumbnail: '/career_image.png',
-    videoUrl: 'https://youtube.com/watch?v=dQw4w9WgXcQ',
+    videoUrl: 'hhttps://www.youtube.com/watch?v=TSwYVAlbmDM',
     category: 'Government Jobs',
     tags: ['government jobs', 'ssc', 'banking', 'preparation'],
     featured: true
@@ -88,14 +88,14 @@ const mockVideos: VideoResource[] = [
     likes: '28K',
     publishedAt: '2024-01-20',
     thumbnail: '/career_image.png',
-    videoUrl: 'https://youtube.com/watch?v=dQw4w9WgXcQ',
+    videoUrl: 'https://www.youtube.com/watch?v=Bv5pow9fnWw',
     category: 'Medical',
     tags: ['medical', 'neet', 'mbbs', 'career options'],
     featured: false
   },
   {
     id: '4',
-    title: 'Tech Industry Career Roadmap 2024',
+    title: 'Tech Industry Career Roadmap ',
     channel: 'TechCareer Hub',
     description: 'Complete roadmap for software development, data science, AI/ML, and tech entrepreneurship.',
     duration: '52:45',
@@ -103,7 +103,7 @@ const mockVideos: VideoResource[] = [
     likes: '41K',
     publishedAt: '2024-02-10',
     thumbnail: '/career_image.png',
-    videoUrl: 'https://youtube.com/watch?v=dQw4w9WgXcQ',
+    videoUrl: 'https://www.youtube.com/watch?v=fZmQ_aPXJAM',
     category: 'Technology',
     tags: ['programming', 'data science', 'ai ml', 'tech careers'],
     featured: true
@@ -118,7 +118,7 @@ const mockVideos: VideoResource[] = [
     likes: '19K',
     publishedAt: '2024-01-28',
     thumbnail: '/career_image.png',
-    videoUrl: 'https://youtube.com/watch?v=dQw4w9WgXcQ',
+    videoUrl: 'https://www.youtube.com/watch?v=vtP8v_hx67E',
     category: 'Commerce',
     tags: ['commerce', 'ca', 'cs', 'cma', 'finance'],
     featured: false
@@ -133,7 +133,7 @@ const mockVideos: VideoResource[] = [
     likes: '15K',
     publishedAt: '2024-02-05',
     thumbnail: '/career_image.png',
-    videoUrl: 'https://youtube.com/watch?v=dQw4w9WgXcQ',
+    videoUrl: 'https://www.youtube.com/watch?v=vtP8v_hx67E',
     category: 'Arts & Humanities',
     tags: ['arts', 'humanities', 'journalism', 'psychology', 'creative careers'],
     featured: false
@@ -148,14 +148,14 @@ const mockVideos: VideoResource[] = [
     likes: '34K',
     publishedAt: '2024-02-12',
     thumbnail: '/career_image.png',
-    videoUrl: 'https://youtube.com/watch?v=dQw4w9WgXcQ',
+    videoUrl: 'https://www.youtube.com/watch?v=gGUH5DEtShQ',
     category: 'Career Decision',
     tags: ['startup', 'corporate', 'career choice', 'work culture'],
     featured: true
   },
   {
     id: '8',
-    title: 'Digital Marketing Career Guide 2024',
+    title: 'Digital Marketing Career Guide 2025',
     channel: 'Digital Marketing Pro',
     description: 'Complete guide to building a career in digital marketing including SEO, social media, and analytics.',
     duration: '47:18',
@@ -163,7 +163,7 @@ const mockVideos: VideoResource[] = [
     likes: '27K',
     publishedAt: '2024-01-25',
     thumbnail: '/career_image.png',
-    videoUrl: 'https://youtube.com/watch?v=dQw4w9WgXcQ',
+    videoUrl: 'https://www.youtube.com/watch?v=fZmQ_aPXJAM',
     category: 'Digital Marketing',
     tags: ['digital marketing', 'seo', 'social media', 'analytics'],
     featured: false
@@ -208,7 +208,7 @@ const mockVideos: VideoResource[] = [
     likes: '26K',
     publishedAt: '2024-02-03',
     thumbnail: '/career_image.png',
-    videoUrl: 'https://youtube.com/watch?v=dQw4w9WgXcQ',
+    videoUrl: 'https://www.youtube.com/watch?v=fZmQ_aPXJAM',
     category: 'Design',
     tags: ['design', 'ui ux', 'graphic design', 'product design', 'portfolio'],
     featured: false
@@ -245,7 +245,7 @@ const mockArticles: ArticleResource[] = [
   },
   {
     id: '2',
-    title: 'Skills Every Student Should Learn in 2024',
+    title: 'Skills Every Student Should Learn in 2025',
     description: 'Essential skills for modern career success including digital literacy, communication, and critical thinking.',
     author: 'Rajesh Kumar',
     readTime: '6 min',
