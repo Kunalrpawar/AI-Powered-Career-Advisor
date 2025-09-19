@@ -45,14 +45,21 @@ const Profile: React.FC = () => {
   }, [user]);
 
   const loadUserBadges = async () => {
-    if (!token) return;
+    if (!token) {
+      console.log('❌ No token available for loading badges');
+      return;
+    }
     
+    console.log('🔄 Loading user badges...');
     setLoadingBadges(true);
     try {
       const response = await badgeService.getMyBadges();
+      console.log('✅ Badges loaded successfully:', response);
       setBadges(response.badges);
     } catch (error) {
-      console.error('Failed to load badges:', error);
+      console.error('❌ Failed to load badges:', error);
+      // Set empty array instead of leaving undefined
+      setBadges([]);
     } finally {
       setLoadingBadges(false);
     }
@@ -295,11 +302,27 @@ const Profile: React.FC = () => {
                 <div className="space-y-3">
                   {badges.map((badge, index) => (
                     <div key={index} className="flex items-center space-x-3 p-3 bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-700 dark:to-gray-600 rounded-lg border border-gray-200 dark:border-gray-600">
-                      <img 
-                        src={badge.image} 
-                        alt={badge.name} 
-                        className="w-12 h-12 rounded-full shadow-md" 
-                      />
+                      <div className="w-12 h-12 rounded-full shadow-md bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center flex-shrink-0">
+                        {badge.image ? (
+                          <img 
+                            src={badge.image} 
+                            alt={badge.name} 
+                            className="w-12 h-12 rounded-full shadow-md"
+                            onError={(e) => {
+                              // Fallback to emoji if image fails
+                              const target = e.target as HTMLImageElement;
+                              target.style.display = 'none';
+                              const parent = target.parentElement;
+                              if (parent) {
+                                parent.innerHTML = '🏆';
+                                parent.className += ' text-2xl';
+                              }
+                            }}
+                          />
+                        ) : (
+                          <span className="text-2xl">🏆</span>
+                        )}
+                      </div>
                       <div className="flex-1">
                         <p className="font-medium text-gray-900 dark:text-gray-100">{badge.name}</p>
                         <p className="text-sm text-gray-600 dark:text-gray-400">{badge.description}</p>
@@ -323,6 +346,45 @@ const Profile: React.FC = () => {
                     <p>🗺️ Career Mapping: Explore career paths</p>
                     <p>👨‍🏫 Mentor Session: Book a mentor session</p>
                     <p>🧠 Aptitude Test: Complete aptitude exam</p>
+                  </div>
+                  
+                  {/* Debug section - remove in production */}
+                  <div className="mt-6 pt-4 border-t border-gray-200 dark:border-gray-600">
+                    <p className="text-xs text-gray-400 mb-2">Debug: Test Badge System</p>
+                    <div className="flex justify-center space-x-2">
+                      <button 
+                        onClick={async () => {
+                          try {
+                            const result = await badgeService.triggerAptitudeBadge();
+                            console.log('Badge test result:', result);
+                            if (result?.isNewBadge) {
+                              await loadUserBadges();
+                            }
+                          } catch (error) {
+                            console.error('Badge test error:', error);
+                          }
+                        }}
+                        className="px-2 py-1 bg-blue-600 text-white text-xs rounded hover:bg-blue-700"
+                      >
+                        Test Aptitude
+                      </button>
+                      <button 
+                        onClick={async () => {
+                          try {
+                            const result = await badgeService.triggerCareerMappingBadge();
+                            console.log('Badge test result:', result);
+                            if (result?.isNewBadge) {
+                              await loadUserBadges();
+                            }
+                          } catch (error) {
+                            console.error('Badge test error:', error);
+                          }
+                        }}
+                        className="px-2 py-1 bg-green-600 text-white text-xs rounded hover:bg-green-700"
+                      >
+                        Test Career
+                      </button>
+                    </div>
                   </div>
                 </div>
               )}

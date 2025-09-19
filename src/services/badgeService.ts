@@ -62,7 +62,18 @@ class BadgeService {
   }
 
   async getMyBadges(): Promise<{ badges: Badge[]; totalBadges: number }> {
-    return await this.makeRequest('/my-badges');
+    try {
+      const result = await this.makeRequest('/my-badges');
+      // Ensure we always return an array
+      return {
+        badges: Array.isArray(result.badges) ? result.badges : [],
+        totalBadges: result.totalBadges || 0
+      };
+    } catch (error) {
+      console.error('❌ Failed to get badges:', error);
+      // Return empty array instead of throwing
+      return { badges: [], totalBadges: 0 };
+    }
   }
 
   async getAvailableBadges(): Promise<{ badges: Badge[] }> {
