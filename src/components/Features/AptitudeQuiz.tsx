@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import Results from './Results';
 import { badgeService } from '../../services/badgeService';
@@ -464,6 +464,7 @@ const AptitudeQuiz: React.FC = () => {
   const [badgeNotification, setBadgeNotification] = useState<{badge: any, isVisible: boolean}>({badge: null, isVisible: false});
   const [results, setResults] = useState<any>(null);
   const [hasTriggeredAptitudeBadge, setHasTriggeredAptitudeBadge] = useState(false);
+  const quizTopRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (timeRemaining > 0 && currentPage === 'section') {
@@ -474,7 +475,12 @@ const AptitudeQuiz: React.FC = () => {
     }
   }, [timeRemaining, currentPage]);
 
-
+  // Scroll to top when section or page changes
+  useEffect(() => {
+    if (quizTopRef.current) {
+      quizTopRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [currentPage, currentSection]);
 
   // Trigger aptitude badge when quiz is completed
   const triggerAptitudeBadge = async () => {
@@ -621,11 +627,22 @@ const AptitudeQuiz: React.FC = () => {
   const submitSection = () => {
     if (currentSection < 3) {
       setCurrentSection(currentSection + 1);
+      // Scrolling is now handled by useEffect
     } else {
       setCurrentPage('results');
       // Trigger aptitude badge when quiz is completed
       triggerAptitudeBadge();
     }
+  };
+
+  // Add scroll to top when returning to start page
+  const handleRetakeQuiz = () => {
+    setCurrentPage('start');
+    setCurrentSection(0);
+    setAnswers(new Array(40).fill(-1));
+    setTimeRemaining(30 * 60);
+    setStudentClass('');
+    // Scrolling is now handled by useEffect
   };
 
   const isSectionComplete = (sectionIndex: number) => {
@@ -640,7 +657,7 @@ const AptitudeQuiz: React.FC = () => {
   // Start Page
   if (currentPage === 'start') {
     return (
-      <div className="w-full mx-auto p-8 bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 dark:from-gray-900 dark:via-gray-800 dark:to-indigo-900 min-h-screen">
+      <div ref={quizTopRef} className="w-full mx-auto p-8 bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 dark:from-gray-900 dark:via-gray-800 dark:to-indigo-900 min-h-screen">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
             <div className="mb-8">
@@ -798,7 +815,7 @@ const AptitudeQuiz: React.FC = () => {
     const currentColor = sectionColors[currentSection];
 
     return (
-      <div className="w-full mx-auto p-8 bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 dark:from-gray-900 dark:via-gray-800 dark:to-indigo-900 min-h-screen">
+      <div ref={quizTopRef} className="w-full mx-auto p-8 bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 dark:from-gray-900 dark:via-gray-800 dark:to-indigo-900 min-h-screen">
         <div className="max-w-6xl mx-auto">
           {/* Header */}
           <div className="text-center mb-12">
@@ -925,13 +942,7 @@ const AptitudeQuiz: React.FC = () => {
           studentClass={studentClass as '10' | '12'}
           aptitudeScore={calculatedResults.aptitudeScore}
           careerScores={calculatedResults.careerScores}
-          onRetakeQuiz={() => {
-            setCurrentPage('start');
-            setCurrentSection(0);
-            setAnswers(new Array(40).fill(-1));
-            setTimeRemaining(30 * 60);
-            setStudentClass('');
-          }}
+          onRetakeQuiz={handleRetakeQuiz}
           onBadgeEarned={(badge) => {
             setBadgeNotification({ badge, isVisible: true });
           }}

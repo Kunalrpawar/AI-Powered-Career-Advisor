@@ -36,8 +36,8 @@
     "hero": {
       "welcome": "Welcome",
       "subtitle": "Your AI-powered companion for skills, projects, interviews, and jobs.",
-      "practice_interview": "Practice Interview",
-      "open_ai_assistance": "Open AI Assistance"
+      "practice_interview": "Practice Resources",
+      "open_ai_assistance": "AI Assistance"
     },
     "stats": {
       "skills_analyzed": "Skills Analyzed",

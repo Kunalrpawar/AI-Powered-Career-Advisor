@@ -1,6 +1,6 @@
 // @ts-nocheck
 import React from 'react';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   PieChart,
@@ -22,6 +22,8 @@ import {
 } from 'recharts';
 import { badgeService } from '../../services/badgeService';
 import { mlCareerModel, type MLAnalysisResult, type StudentProfile } from '../../utils/mlCareerModel';
+import { jsPDF } from 'jspdf';
+import html2canvas from 'html2canvas';
 
 // Mock data - In a real application, this would come from props or API
 const mockResults = {
@@ -146,6 +148,7 @@ const Results: React.FC<ResultsProps> = (props) => {
   const { t } = useTranslation();
   const [mlResults, setMLResults] = useState<MLAnalysisResult | null>(null);
   const [isLoadingML, setIsLoadingML] = useState(false);
+  const resultsRef = useRef<HTMLDivElement>(null);
 
   // Trigger ML analysis
   useEffect(() => {
@@ -283,8 +286,111 @@ const Results: React.FC<ResultsProps> = (props) => {
     return null;
   };
 
+  // PDF Download Function
+  const downloadPDF = async () => {
+    if (!resultsRef.current) return;
+
+    try {
+      // Show loading state
+      const downloadBtn = document.querySelector('.download-btn');
+      if (downloadBtn) {
+        downloadBtn.innerHTML = `
+          <div class="flex items-center justify-center space-x-2">
+            <div class="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+            <span>Generating PDF...</span>
+          </div>
+        `;
+        downloadBtn.classList.add('opacity-75', 'cursor-not-allowed');
+      }
+
+      // Simple approach: Create a basic PDF with text content
+      const doc = new jsPDF();
+      
+      // Add title
+      doc.setFontSize(20);
+      doc.text('Career Assessment Results', 105, 20, { align: 'center' });
+      
+      // Add basic information
+      doc.setFontSize(12);
+      doc.text(`Class: ${studentClass}`, 20, 35);
+      doc.text(`Generated on: ${new Date().toLocaleDateString()}`, 20, 45);
+      
+      // Add cognitive score
+      doc.setFontSize(16);
+      doc.text('Cognitive Score', 20, 60);
+      doc.setFontSize(14);
+      doc.text(`${aptitudeScore}/10 (${aptitudeScore >= 8 ? 'Excellent' : aptitudeScore >= 6 ? 'Above Average' : aptitudeScore >= 4 ? 'Average' : 'Needs Improvement'})`, 20, 70);
+      
+      // Add top matches
+      doc.setFontSize(16);
+      doc.text('Top Career Matches', 20, 90);
+      doc.setFontSize(14);
+      
+      let yPos = 100;
+      const topMatches = getTopCareerMatches();
+      topMatches.forEach((match, index) => {
+        doc.text(`${index + 1}. ${match.name.replace(' Aptitude', '')} - ${match.percentage}% match`, 20, yPos);
+        yPos += 10;
+      });
+      
+      // Add stream/course recommendations
+      yPos += 10;
+      doc.setFontSize(16);
+      doc.text(studentClass === '10' ? 'Stream Recommendations' : 'Course Recommendations', 20, yPos);
+      yPos += 10;
+      doc.setFontSize(14);
+      
+      if (studentClass === '10') {
+        const streamData = calculateStreamPercentages();
+        streamData.forEach((stream, index) => {
+          doc.text(`${index + 1}. ${stream.name} - ${stream.value}% compatibility`, 20, yPos);
+          yPos += 10;
+        });
+      } else {
+        const courseRecommendations = getCourseRecommendations();
+        courseRecommendations.slice(0, 5).forEach((course, index) => {
+          doc.text(`${index + 1}. ${course.name} - ${course.probability}% match`, 20, yPos);
+          yPos += 10;
+        });
+      }
+      
+      // Save the PDF
+      doc.save(`Career_Assessment_Results_Class_${studentClass}.pdf`);
+      
+      // Reset button
+      if (downloadBtn) {
+        downloadBtn.innerHTML = `
+          <div class="flex items-center justify-center space-x-2">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            </svg>
+            <span>Download Report</span>
+          </div>
+        `;
+        downloadBtn.classList.remove('opacity-75', 'cursor-not-allowed');
+      }
+    } catch (error) {
+      console.error('Error generating PDF:', error);
+      // Reset button on error
+      const downloadBtn = document.querySelector('.download-btn');
+      if (downloadBtn) {
+        downloadBtn.innerHTML = `
+          <div class="flex items-center justify-center space-x-2">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            </svg>
+            <span>Download Report</span>
+          </div>
+        `;
+        downloadBtn.classList.remove('opacity-75', 'cursor-not-allowed');
+      }
+      // Show error message to user
+      alert('Failed to generate PDF. Please try again.');
+    }
+  };
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 dark:from-gray-900 dark:via-gray-800 dark:to-indigo-900 p-6">
+    <div ref={resultsRef} className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 dark:from-gray-900 dark:via-gray-800 dark:to-indigo-900 p-6">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="text-center mb-12">
@@ -727,7 +833,10 @@ const Results: React.FC<ResultsProps> = (props) => {
             </div>
           </button>
           
-          <button className="px-8 py-4 bg-gradient-to-r from-green-600 to-emerald-600 text-white font-bold rounded-2xl hover:from-green-700 hover:to-emerald-700 transition-all duration-300 transform hover:scale-105 shadow-xl">
+          <button 
+            onClick={downloadPDF}
+            className="download-btn px-8 py-4 bg-gradient-to-r from-green-600 to-emerald-600 text-white font-bold rounded-2xl hover:from-green-700 hover:to-emerald-700 transition-all duration-300 transform hover:scale-105 shadow-xl"
+          >
             <div className="flex items-center justify-center space-x-2">
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
