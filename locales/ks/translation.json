@@ -27,7 +27,47 @@
     "subtitle": "तुहॅन्द AI-powered कैरियर गाइडेंस प्लेटफॉर्म",
     "quick_actions": "फटाफट कार्य",
     "recent_activities": "हालिच गतिविधि",
-    "progress": "तुहॅन्द तरक्की"
+    "progress": "तुहॅन्द तरक्की",
+    "recommended": "सिफारिश कॅरमॅत",
+    "no_activity": "अभी तक कांह हालिच गतिविधि नै। एक फटाफट कार्य सॅत्य शुरू करिव।",
+    "view_all_activities": "सॉरिय गतिविधि व्यचिव",
+    "getting_started": "शुरूआत",
+    "refresh": "ताज़ा करिव",
+    "hero": {
+      "welcome": "ख़ुश आमदीद",
+      "subtitle": "हुनर, प्रोजेक्ट, इंटरव्यू त' नौकरी बापथ तुहॅन्द AI-powered रफीक।",
+      "practice_interview": "इंटरव्यू अभ्यास",
+      "open_ai_assistance": "AI मदद खोलिव"
+    },
+    "stats": {
+      "title": "तुहॅन्द आंकड़े त' तरक्की",
+      "skills_analyzed": "तहलील कॅरमॅत हुनर",
+      "career_explored": "खोज़मॅत कैरियर राह",
+      "projects_completed": "मुकम्मल कॅरमॅत प्रोजेक्ट",
+      "achievements": "कामयाबी"
+    },
+    "actions": {
+      "analyze_skills": "अपॅन्य हुनर तहलील करिव",
+      "analyze_skills_desc": "AI-पावॅर्ड इनसाइट्स प्राप्त करनॅ खातिर अपॅन्य रिज्यूम अपलोड करिव या अपॅन्य हुनर सूची बनाविव",
+      "explore_careers": "कैरियर राह खोज़िव",
+      "explore_careers_desc": "अपॅन्य दिलचस्पी सॅत्य मेल खान्य वॉल्य कैरियर मौके खोज़िव",
+      "chat_mentor": "AI मेंटर सॅत्य बात करिव",
+      "chat_mentor_desc": "शख़्सी कैरियर सलाह त' रहनुमाई प्राप्त करिव",
+      "career_mapping": "कैरियर मैपिंग",
+      "career_mapping_desc": "इंटरैक्टिव मैपिंग सॅत्य कैरियर राह व्यचिव",
+      "scholarships": "स्कॉलरशिप",
+      "scholarships_desc": "तालीमी स्कॉलरशिप त' मालीयाती मदद ब्राउज़ करिव त' दरखास्त द्यिव",
+      "colleges": "सरकारी कॉलेज",
+      "colleges_desc": "सरकारी कॉलेज त' तालीमी अदारन खोज़िव"
+    },
+    "steps": {
+      "complete_profile": "प्रोफाइल मुकम्मल करिव",
+      "complete_profile_desc": "अपॅन्य तालीम त' दिलचस्पी भरिव",
+      "run_skill_gap": "स्किल गैप चलाविव",
+      "run_skill_gap_desc": "रिज्यूम या हुनर अपलोड करिव",
+      "try_ai_assistance": "AI मदद आज़माविव",
+      "try_ai_assistance_desc": "इंटरव्यू या मेंटर रहनुमाई"
+    }
   },
   "auth": {
     "login": "लॉगिन",

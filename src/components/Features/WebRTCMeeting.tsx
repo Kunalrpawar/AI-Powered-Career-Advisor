@@ -4,16 +4,11 @@ import {
   VideoOff, 
   Mic, 
   MicOff, 
-  Phone, 
   PhoneOff, 
   Monitor, 
   MessageSquare, 
   Settings,
   Users,
-  Volume2,
-  VolumeX,
-  Camera,
-  RotateCcw,
   Maximize2,
   Minimize2,
   Copy,
@@ -21,6 +16,7 @@ import {
   Link,
   UserPlus
 } from 'lucide-react';
+import io, { Socket } from 'socket.io-client';
 
 interface WebRTCMeetingProps {
   isOpen: boolean;
@@ -52,12 +48,13 @@ const WebRTCMeeting: React.FC<WebRTCMeetingProps> = ({
   
   // WebRTC refs
   const localStreamRef = useRef<MediaStream | null>(null);
-  const peerConnectionRef = useRef<RTCPeerConnection | null>(null);
+  const socketRef = useRef<Socket | null>(null);
+  const peerConnectionsRef = useRef<Record<string, RTCPeerConnection>>({});
+  const remoteStreamsRef = useRef<Record<string, MediaStream>>({});
   
   // State
   const [isVideoEnabled, setIsVideoEnabled] = useState(true);
   const [isAudioEnabled, setIsAudioEnabled] = useState(true);
-  const [isConnected, setIsConnected] = useState(false);
   const [participants, setParticipants] = useState<Participant[]>([]);
   const [showChat, setShowChat] = useState(false);
   const [chatMessages, setChatMessages] = useState<{id: string, sender: string, message: string, timestamp: string}[]>([]);
@@ -144,37 +141,12 @@ const WebRTCMeeting: React.FC<WebRTCMeetingProps> = ({
         localVideoRef.current.srcObject = stream;
       }
 
-      // Create peer connection
-      const peerConnection = new RTCPeerConnection(rtcConfig);
-      peerConnectionRef.current = peerConnection;
+      // Connect to signaling server
+      const socket = io(import.meta.env.VITE_API_URL || window.location.origin);
+      socketRef.current = socket;
 
-      // Add local stream to peer connection
-      stream.getTracks().forEach(track => {
-        peerConnection.addTrack(track, stream);
-      });
-
-      // Handle remote stream
-      peerConnection.ontrack = (event) => {
-        if (remoteVideoRef.current) {
-          remoteVideoRef.current.srcObject = event.streams[0];
-        }
-      };
-
-      // Handle connection state changes
-      peerConnection.onconnectionstatechange = () => {
-        setConnectionStatus(peerConnection.connectionState as any);
-        setIsConnected(peerConnection.connectionState === 'connected');
-      };
-
-      // ICE candidate handling
-      peerConnection.onicecandidate = (event) => {
-        if (event.candidate) {
-          // In a real implementation, send this to the signaling server
-          console.log('ICE candidate:', event.candidate);
-        }
-      };
-
-      setConnectionStatus('connected');
+      // Generate meeting link
+      generateMeetingLink();
       
       // Add local participant
       setParticipants([{
@@ -186,14 +158,174 @@ const WebRTCMeeting: React.FC<WebRTCMeetingProps> = ({
         isAudioEnabled: true
       }]);
 
-      // Generate meeting link
-      generateMeetingLink();
+      // Socket.io event handlers
+      socket.on('connect', () => {
+        console.log('Connected to signaling server');
+        setConnectionStatus('connected');
+        
+        // Join meeting room
+        socket.emit('join-meeting', {
+          meetingId,
+          userName,
+          isHost
+        });
+      });
+      
+      socket.on('meeting-participants', ({ participants: remoteParticipants }) => {
+        console.log('Current participants:', remoteParticipants);
+        
+        // Create peer connections for each existing participant
+        remoteParticipants.forEach((participantId: string) => {
+          createPeerConnection(participantId, true);
+        });
+      });
+      
+      socket.on('participant-joined', async ({ participantId, userName: remoteName }) => {
+        console.log(`New participant joined: ${remoteName} (${participantId})`);
+        await createPeerConnection(participantId, false);
+      });
+      
+      socket.on('participant-left', ({ participantId }) => {
+        console.log(`Participant left: ${participantId}`);
+        
+        // Close and remove peer connection
+        if (peerConnectionsRef.current[participantId]) {
+          peerConnectionsRef.current[participantId].close();
+          delete peerConnectionsRef.current[participantId];
+        }
+        
+        // Remove participant from state
+        setParticipants(prev => prev.filter(p => p.id !== participantId));
+      });
+      
+      socket.on('offer', async ({ fromId, description }) => {
+        console.log(`Received offer from ${fromId}`);
+        const pc = peerConnectionsRef.current[fromId] || await createPeerConnection(fromId, false);
+        
+        await pc.setRemoteDescription(new RTCSessionDescription(description));
+        const answer = await pc.createAnswer();
+        await pc.setLocalDescription(answer);
+        
+        // Send answer back
+        socket.emit('answer', {
+          targetId: fromId,
+          description: pc.localDescription
+        });
+      });
+      
+      socket.on('answer', async ({ fromId, description }) => {
+        console.log(`Received answer from ${fromId}`);
+        const pc = peerConnectionsRef.current[fromId];
+        if (pc) {
+          await pc.setRemoteDescription(new RTCSessionDescription(description));
+        }
+      });
+      
+      socket.on('ice-candidate', async ({ fromId, candidate }) => {
+        console.log(`Received ICE candidate from ${fromId}`);
+        const pc = peerConnectionsRef.current[fromId];
+        if (pc) {
+          await pc.addIceCandidate(new RTCIceCandidate(candidate));
+        }
+      });
+      
+      socket.on('chat-message', ({ senderId, message }) => {
+        console.log(`Received chat message from ${senderId}: ${message}`);
+        const sender = participants.find(p => p.id === senderId)?.name || 'Unknown';
+        setChatMessages(prev => [...prev, {
+          id: Date.now().toString(),
+          sender,
+          message,
+          timestamp: new Date().toLocaleTimeString()
+        }]);
+      });
+      
+      socket.on('disconnect', () => {
+        console.log('Disconnected from signaling server');
+        setConnectionStatus('disconnected');
+      });
 
     } catch (error) {
       console.error('Error initializing WebRTC:', error);
       setConnectionStatus('failed');
     }
-  }, [userName, isHost, rtcConfig, generateMeetingLink]);
+  }, [userName, isHost, rtcConfig, generateMeetingLink, meetingId]);
+  
+  // Create peer connection for a participant
+  const createPeerConnection = useCallback(async (participantId: string, initiator: boolean) => {
+    console.log(`Creating peer connection for ${participantId}, initiator: ${initiator}`);
+    
+    // Create peer connection
+    const pc = new RTCPeerConnection(rtcConfig);
+    peerConnectionsRef.current[participantId] = pc;
+    
+    // Add local stream
+    if (localStreamRef.current) {
+      localStreamRef.current.getTracks().forEach(track => {
+        pc.addTrack(track, localStreamRef.current!);
+      });
+    }
+    
+    // Handle ICE candidates
+    pc.onicecandidate = (event) => {
+      if (event.candidate && socketRef.current) {
+        socketRef.current.emit('ice-candidate', {
+          targetId: participantId,
+          candidate: event.candidate
+        });
+      }
+    };
+    
+    // Handle connection state changes
+    pc.onconnectionstatechange = () => {
+      console.log(`Connection state with ${participantId}: ${pc.connectionState}`);
+    };
+    
+    // Handle remote tracks
+    pc.ontrack = (event) => {
+      console.log(`Received remote track from ${participantId}`);
+      
+      if (!remoteStreamsRef.current[participantId]) {
+        remoteStreamsRef.current[participantId] = new MediaStream();
+      }
+      
+      const stream = remoteStreamsRef.current[participantId];
+      event.streams[0].getTracks().forEach(track => {
+        stream.addTrack(track);
+      });
+      
+      // Update state with new participant
+      const existingParticipant = participants.find(p => p.id === participantId);
+      if (!existingParticipant) {
+        setParticipants(prev => [...prev, {
+          id: participantId,
+          name: `Participant ${participantId.slice(0, 5)}`,
+          stream,
+          isHost: false,
+          isVideoEnabled: true,
+          isAudioEnabled: true
+        }]);
+      }
+      
+      // Show remote stream in main view
+      if (remoteVideoRef.current && !remoteVideoRef.current.srcObject) {
+        remoteVideoRef.current.srcObject = stream;
+      }
+    };
+    
+    // If initiator, create and send offer
+    if (initiator && socketRef.current) {
+      const offer = await pc.createOffer();
+      await pc.setLocalDescription(offer);
+      
+      socketRef.current.emit('offer', {
+        targetId: participantId,
+        description: pc.localDescription
+      });
+    }
+    
+    return pc;
+  }, [rtcConfig, participants]);
 
   // Toggle video
   const toggleVideo = useCallback(() => {
@@ -269,14 +401,22 @@ const WebRTCMeeting: React.FC<WebRTCMeetingProps> = ({
 
   // Send chat message
   const sendMessage = useCallback(() => {
-    if (newMessage.trim()) {
+    if (newMessage.trim() && socketRef.current) {
       const message = {
         id: Date.now().toString(),
         sender: userName,
         message: newMessage.trim(),
         timestamp: new Date().toLocaleTimeString()
       };
+      
+      // Add message to local chat
       setChatMessages(prev => [...prev, message]);
+      
+      // Send to other participants via signaling server
+      socketRef.current.emit('chat-message', {
+        message: newMessage.trim()
+      });
+      
       setNewMessage('');
     }
   }, [newMessage, userName]);
@@ -288,9 +428,14 @@ const WebRTCMeeting: React.FC<WebRTCMeetingProps> = ({
       localStreamRef.current.getTracks().forEach(track => track.stop());
     }
     
-    // Close peer connection
-    if (peerConnectionRef.current) {
-      peerConnectionRef.current.close();
+    // Close all peer connections
+    Object.values(peerConnectionsRef.current).forEach(pc => {
+      pc.close();
+    });
+    
+    // Disconnect from signaling server
+    if (socketRef.current) {
+      socketRef.current.disconnect();
     }
     
     // Close meeting
@@ -313,8 +458,15 @@ const WebRTCMeeting: React.FC<WebRTCMeetingProps> = ({
       if (localStreamRef.current) {
         localStreamRef.current.getTracks().forEach(track => track.stop());
       }
-      if (peerConnectionRef.current) {
-        peerConnectionRef.current.close();
+      
+      // Close all peer connections
+      Object.values(peerConnectionsRef.current).forEach(pc => {
+        pc.close();
+      });
+      
+      // Disconnect from signaling server
+      if (socketRef.current) {
+        socketRef.current.disconnect();
       }
     };
   }, [isOpen, initializeWebRTC]);

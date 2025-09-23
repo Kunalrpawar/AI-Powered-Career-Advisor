@@ -27,10 +27,47 @@
     "subtitle": "آپ کا اے آئی سے چلنے والا کیریئر رہنمائی پلیٹ فارم",
     "quick_actions": "فوری اعمال",
     "recent_activities": "حالیہ سرگرمیاں",
+    "progress": "آپ کی پیش رفت",
     "recommended": "تجویز کردہ",
     "no_activity": "ابھی تک کوئی حالیہ سرگرمی نہیں۔ ایک فوری عمل سے شروع کریں۔",
     "view_all_activities": "تمام سرگرمیاں دیکھیں",
-    "getting_started": "شروعات"
+    "getting_started": "شروعات",
+    "refresh": "ریفریش کریں",
+    "hero": {
+      "welcome": "خوش آمدید",
+      "subtitle": "مہارتوں، منصوبوں، انٹرویوز، اور نوکریوں کے لئے آپ کا اے آئی ساتھی۔",
+      "practice_interview": "انٹرویو کی پریکٹس کریں",
+      "open_ai_assistance": "اے آئی اسسٹنٹ کھولیں"
+    },
+    "stats": {
+      "title": "آپ کے اعدادوشمار اور پیشرفت",
+      "skills_analyzed": "تجزیہ شدہ مہارتیں",
+      "career_explored": "دریافت شدہ کیریئر راستے",
+      "projects_completed": "مکمل شدہ منصوبے",
+      "achievements": "کامیابیاں"
+    },
+    "actions": {
+      "analyze_skills": "اپنی مہارتوں کا تجزیہ کریں",
+      "analyze_skills_desc": "اے آئی سے چلنے والی بصیرت حاصل کرنے کے لئے اپنا ریزیوم اپ لوڈ کریں یا اپنی مہارتوں کی فہرست بنائیں",
+      "explore_careers": "کیریئر راستوں کی تلاش کریں",
+      "explore_careers_desc": "اپنی دلچسپیوں سے میل کھانے والے کیریئر کے مواقع دریافت کریں",
+      "chat_mentor": "اے آئی مینٹر سے بات کریں",
+      "chat_mentor_desc": "ذاتی کیریئر مشورے اور رہنمائی حاصل کریں",
+      "career_mapping": "کیریئر میپنگ",
+      "career_mapping_desc": "تعاملی میپنگ کے ساتھ کیریئر کے راستے دیکھیں",
+      "scholarships": "وظائف",
+      "scholarships_desc": "تعلیمی وظائف اور مالی امداد کی تلاش کریں اور درخواست دیں",
+      "colleges": "سرکاری کالج",
+      "colleges_desc": "سرکاری کالجوں اور تعلیمی اداروں کا پتہ لگائیں"
+    },
+    "steps": {
+      "complete_profile": "پروفائل مکمل کریں",
+      "complete_profile_desc": "اپنی تعلیم اور دلچسپیاں بھریں",
+      "run_skill_gap": "سکل گیپ چلائیں",
+      "run_skill_gap_desc": "ریزیوم یا مہارتیں اپ لوڈ کریں",
+      "try_ai_assistance": "اے آئی اسسٹنس آزمائیں",
+      "try_ai_assistance_desc": "انٹرویو یا مینٹر گائیڈنس"
+    }
   },
   "auth": {
     "login": "لاگ ان",

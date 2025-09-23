@@ -24,6 +24,7 @@ import express from 'express';
 import mongoose from 'mongoose';
 import cors from 'cors';
 import multer from 'multer';
+import http from 'http';
 
 import authRoutes from './routes/auth.js';
 import documentRoutes from './routes/documents.js';
@@ -31,6 +32,9 @@ import dashboardRoutes from './routes/dashboard.js';
 import interviewRoutes from './routes/interview.js';
 import profileRoutes from './routes/profile.js';
 import badgeRoutes from './routes/badges.js';
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+import { initializeSignalingServer } from './signaling.js';
 // existing route imports below
 
 // Debug environment variables
@@ -177,6 +181,14 @@ app.get('/api/test-ai', async (req, res) => {
   }
 });
 
-app.listen(PORT, () => {
+// Create HTTP server
+const server = http.createServer(app);
+
+// Initialize WebRTC signaling
+initializeSignalingServer(server);
+
+// Start server
+server.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
+  console.log(`WebRTC signaling server active`);
 });

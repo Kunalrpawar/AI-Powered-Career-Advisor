@@ -27,7 +27,47 @@
     "subtitle": "तुसां दा AI-powered कैरियर मार्गदर्शन प्लेटफॉर्म",
     "quick_actions": "फट्टक कम्म",
     "recent_activities": "हाल दी गतिविधियां",
-    "progress": "तुसां दी प्रगति"
+    "progress": "तुसां दी प्रगति",
+    "recommended": "सुझाऐ दा",
+    "no_activity": "अज्ज तक कोई हाल दी गतिविधि नेईं। कोई फट्टक कम्म करके शुरू करो।",
+    "view_all_activities": "सब गतिविधियां दिखाओ",
+    "getting_started": "शुरुआत",
+    "refresh": "रिफ्रेश करो",
+    "hero": {
+      "welcome": "स्वागत ऐ",
+      "subtitle": "स्किल्स, प्रोजेक्ट्स, इंटरव्यू ते जॉब्स लई तुसां दा AI-powered साथी।",
+      "practice_interview": "इंटरव्यू अभ्यास",
+      "open_ai_assistance": "AI सहायता खोलो"
+    },
+    "stats": {
+      "title": "तुसां दे आंकड़े ते प्रगति",
+      "skills_analyzed": "विश्लेषित स्किल्स",
+      "career_explored": "खोजे गए कैरियर पाथ",
+      "projects_completed": "पूरे होए प्रोजेक्ट",
+      "achievements": "उपलब्धियां"
+    },
+    "actions": {
+      "analyze_skills": "अपनी स्किल्स दा विश्लेषण करो",
+      "analyze_skills_desc": "AI-संचालित इनसाइट्स प्राप्त करने लई अपना रिज्यूम अपलोड करो या अपनी स्किल्स दी सूची बणाओ",
+      "explore_careers": "कैरियर पाथ दी खोज करो",
+      "explore_careers_desc": "अपनी रुचियां दे अनुसार कैरियर दे मौके तलाशो",
+      "chat_mentor": "AI मेंटर नाल गल्ल करो",
+      "chat_mentor_desc": "निजी कैरियर सलाह ते मार्गदर्शन प्राप्त करो",
+      "career_mapping": "कैरियर मैपिंग",
+      "career_mapping_desc": "इंटरैक्टिव मैपिंग नाल कैरियर पाथ देखो",
+      "scholarships": "छात्रवृत्ति",
+      "scholarships_desc": "शिक्षा छात्रवृत्ति ते वित्तीय सहायता लई ब्राउज़ ते अप्लाई करो",
+      "colleges": "सरकारी कॉलेज",
+      "colleges_desc": "सरकारी कॉलेज ते शिक्षा संस्थावां दी खोज करो"
+    },
+    "steps": {
+      "complete_profile": "प्रोफाइल पूरी करो",
+      "complete_profile_desc": "अपनी शिक्षा ते रुचियां भरो",
+      "run_skill_gap": "स्किल गैप चलाओ",
+      "run_skill_gap_desc": "रिज्यूम या स्किल्स अपलोड करो",
+      "try_ai_assistance": "AI सहायता दी कोशिश करो",
+      "try_ai_assistance_desc": "इंटरव्यू या मेंटर मार्गदर्शन"
+    }
   },
   "auth": {
     "login": "लॉगिन",

@@ -16,7 +16,9 @@ import {
   Activity,
   ChevronRight,
   Clock,
-  Calendar
+  Calendar,
+  RefreshCw,
+  School
 } from 'lucide-react';
 
 interface DashboardHomeProps {
@@ -102,60 +104,98 @@ const DashboardHome: React.FC<DashboardHomeProps> = ({ setActiveSection }) => {
   const [loading, setLoading] = useState(true);
   const [showEnhancedView, setShowEnhancedView] = useState(false);
 
-  useEffect(() => {
-    async function fetchData() {
-      if (!token) return;
+  // Function to fetch dashboard data with cache busting
+  const fetchDashboardData = async () => {
+    if (!token) return;
+    
+    setLoading(true);
+    try {
+      // Try enhanced dashboard first, fallback to regular dashboard
+      const statsEndpoint = showEnhancedView ? '/api/enhanced-dashboard/stats' : '/api/dashboard/stats';
+      const activitiesEndpoint = showEnhancedView ? '/api/enhanced-dashboard/activities' : '/api/dashboard/activities';
       
-      setLoading(true);
-      try {
-        // Try enhanced dashboard first, fallback to regular dashboard
-        const statsEndpoint = showEnhancedView ? '/api/enhanced-dashboard/stats' : '/api/dashboard/stats';
-        const activitiesEndpoint = showEnhancedView ? '/api/enhanced-dashboard/activities' : '/api/dashboard/activities';
-        
-        const [statsRes, actRes] = await Promise.all([
-          fetch(statsEndpoint, { headers: { Authorization: `Bearer ${token}` } }),
-          fetch(activitiesEndpoint, { headers: { Authorization: `Bearer ${token}` } }),
-        ]);
-        
-        if (statsRes.ok) {
-          const statsData = await statsRes.json();
-          setStatsData(statsData);
-          // Auto-enable enhanced view if we have extended data
-          if (statsData.aptitude || statsData.aiChat) {
-            setShowEnhancedView(true);
-          }
-        } else {
-          console.warn('Enhanced dashboard not available, using basic dashboard');
-          // Fallback to basic dashboard
-          const basicStatsRes = await fetch('/api/dashboard/stats', { headers: { Authorization: `Bearer ${token}` } });
-          if (basicStatsRes.ok) setStatsData(await basicStatsRes.json());
+      // Add cache-busting parameter to prevent browser caching
+      const cacheBuster = `?_=${Date.now()}`;
+      
+      const [statsRes, actRes] = await Promise.all([
+        fetch(`${statsEndpoint}${cacheBuster}`, { 
+          headers: { 
+            Authorization: `Bearer ${token}`,
+            'Cache-Control': 'no-cache, no-store, must-revalidate' 
+          } 
+        }),
+        fetch(`${activitiesEndpoint}${cacheBuster}`, { 
+          headers: { 
+            Authorization: `Bearer ${token}`,
+            'Cache-Control': 'no-cache, no-store, must-revalidate'
+          } 
+        }),
+      ]);
+      
+      if (statsRes.ok) {
+        const statsData = await statsRes.json();
+        setStatsData(statsData);
+        // Auto-enable enhanced view if we have extended data
+        if (statsData.aptitude || statsData.aiChat) {
+          setShowEnhancedView(true);
         }
-        
+      } else {
+        console.warn('Enhanced dashboard not available, using basic dashboard');
+        // Fallback to basic dashboard
+        const basicStatsRes = await fetch(`/api/dashboard/stats${cacheBuster}`, { 
+          headers: { 
+            Authorization: `Bearer ${token}`,
+            'Cache-Control': 'no-cache, no-store, must-revalidate'
+          } 
+        });
+        if (basicStatsRes.ok) setStatsData(await basicStatsRes.json());
+      }
+      
+      if (actRes.ok) {
+        const a = await actRes.json();
+        setActivities(a.activities || []);
+      }
+    } catch (error) {
+      console.error('Dashboard fetch error:', error);
+      // Fallback to basic dashboard
+      try {
+        const cacheBuster = `?_=${Date.now()}`;
+        const [statsRes, actRes] = await Promise.all([
+          fetch(`/api/dashboard/stats${cacheBuster}`, { 
+            headers: { 
+              Authorization: `Bearer ${token}`,
+              'Cache-Control': 'no-cache, no-store, must-revalidate'
+            } 
+          }),
+          fetch(`/api/dashboard/activities${cacheBuster}`, { 
+            headers: { 
+              Authorization: `Bearer ${token}`,
+              'Cache-Control': 'no-cache, no-store, must-revalidate'
+            } 
+          }),
+        ]);
+        if (statsRes.ok) setStatsData(await statsRes.json());
         if (actRes.ok) {
           const a = await actRes.json();
           setActivities(a.activities || []);
         }
-      } catch (error) {
-        console.error('Dashboard fetch error:', error);
-        // Fallback to basic dashboard
-        try {
-          const [statsRes, actRes] = await Promise.all([
-            fetch('/api/dashboard/stats', { headers: { Authorization: `Bearer ${token}` } }),
-            fetch('/api/dashboard/activities', { headers: { Authorization: `Bearer ${token}` } }),
-          ]);
-          if (statsRes.ok) setStatsData(await statsRes.json());
-          if (actRes.ok) {
-            const a = await actRes.json();
-            setActivities(a.activities || []);
-          }
-        } catch (fallbackError) {
-          console.error('Fallback dashboard fetch error:', fallbackError);
-        }
-      } finally {
-        setLoading(false);
+      } catch (fallbackError) {
+        console.error('Fallback dashboard fetch error:', fallbackError);
       }
+    } finally {
+      setLoading(false);
     }
-    fetchData();
+  };
+
+  useEffect(() => {
+    fetchDashboardData();
+    
+    // Set up an interval to refresh data every 30 seconds
+    const refreshInterval = setInterval(() => {
+      fetchDashboardData();
+    }, 30000);
+    
+    return () => clearInterval(refreshInterval);
   }, [token, showEnhancedView]);
 
   const stats = useMemo(() => ([
@@ -251,6 +291,20 @@ const DashboardHome: React.FC<DashboardHomeProps> = ({ setActiveSection }) => {
       color: 'orange',
       icon: Map
     },
+    { 
+      title: t('dashboard.actions.scholarships'), 
+      description: t('dashboard.actions.scholarships_desc'),
+      action: () => setActiveSection('scholarships'),
+      color: 'pink',
+      icon: GraduationCap
+    },
+    { 
+      title: t('dashboard.actions.colleges'), 
+      description: t('dashboard.actions.colleges_desc'),
+      action: () => setActiveSection('colleges'),
+      color: 'teal',
+      icon: School
+    },
   ];
 
   return (
@@ -283,7 +337,18 @@ const DashboardHome: React.FC<DashboardHomeProps> = ({ setActiveSection }) => {
         </div>
       </div>
 
-      {/* Stats Grid */}
+      {/* Stats Grid with Refresh Button */}
+      <div className="flex justify-between items-center mb-4">
+        <h3 className="text-xl font-semibold text-gray-800 dark:text-gray-100">{t('dashboard.stats.title') || 'Stats'}</h3>
+        <button 
+          onClick={fetchDashboardData} 
+          className="flex items-center gap-2 text-sm px-3 py-1.5 rounded-md bg-blue-50 text-blue-600 hover:bg-blue-100 dark:bg-blue-900/30 dark:text-blue-300 dark:hover:bg-blue-800/50 transition-colors"
+          disabled={loading}
+        >
+          <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin' : ''}`} />
+          <span>{loading ? t('common.loading') : t('dashboard.refresh') || 'Refresh'}</span>
+        </button>
+      </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {stats.map((stat, index) => {
           const Icon = stat.icon;
@@ -411,12 +476,38 @@ const DashboardHome: React.FC<DashboardHomeProps> = ({ setActiveSection }) => {
             <span className="text-xs px-2 py-1 rounded bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300">{t('dashboard.recommended')}</span>
           </div>
           <div className="grid sm:grid-cols-2 gap-4">
-            {quickActions.map((action, index) => {
+            {quickActions.slice(0, 4).map((action, index) => {
               const Icon = action.icon;
               const color = action.color;
               return (
                 <button
                   key={index}
+                  onClick={action.action}
+                  className="w-full p-4 rounded-xl border-2 border-gray-100 dark:border-gray-700 hover:border-indigo-200 dark:hover:border-indigo-800 hover:bg-indigo-50 dark:hover:bg-gray-700/50 transition-all duration-200 text-left group bg-white dark:bg-gray-800"
+                >
+                  <div className="flex items-start gap-4">
+                    <div className={`w-11 h-11 rounded-xl flex items-center justify-center bg-${color}-50 dark:bg-${color}-900/30 group-hover:scale-105 transition-transform`}>
+                      <Icon className={`w-5 h-5 text-${color}-600 dark:text-${color}-300`} />
+                    </div>
+                    <div className="flex-1">
+                      <h4 className="font-semibold text-gray-900 dark:text-gray-100 mb-1">{action.title}</h4>
+                      <p className="text-sm text-gray-600 dark:text-gray-300">{action.description}</p>
+                    </div>
+                    <ArrowRight className="w-4 h-4 text-gray-400 dark:text-gray-500 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 group-hover:translate-x-1 transition-all" />
+                  </div>
+                </button>
+              );
+            })}
+          </div>
+          
+          {/* Additional Quick Actions (5th and 6th cards) */}
+          <div className="grid sm:grid-cols-2 gap-4 mt-4">
+            {quickActions.slice(4, 6).map((action, index) => {
+              const Icon = action.icon;
+              const color = action.color;
+              return (
+                <button
+                  key={index + 4}
                   onClick={action.action}
                   className="w-full p-4 rounded-xl border-2 border-gray-100 dark:border-gray-700 hover:border-indigo-200 dark:hover:border-indigo-800 hover:bg-indigo-50 dark:hover:bg-gray-700/50 transition-all duration-200 text-left group bg-white dark:bg-gray-800"
                 >

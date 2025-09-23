@@ -33,13 +33,15 @@
     "no_activity": "No recent activity yet. Start with a quick action.",
     "view_all_activities": "View All Activities",
     "getting_started": "Getting Started",
+    "refresh": "Refresh",
     "hero": {
       "welcome": "Welcome",
       "subtitle": "Your AI-powered companion for skills, projects, interviews, and jobs.",
-      "practice_interview": "Practice Resources",
-      "open_ai_assistance": "AI Assistance"
+      "practice_interview": "Practice Interview",
+      "open_ai_assistance": "Open AI Assistance"
     },
     "stats": {
+      "title": "Your Stats & Progress",
       "skills_analyzed": "Skills Analyzed",
       "career_explored": "Career Paths Explored",
       "projects_completed": "Projects Completed",
@@ -53,7 +55,11 @@
       "chat_mentor": "Chat with AI Mentor",
       "chat_mentor_desc": "Get personalized career advice and guidance",
       "career_mapping": "Career Mapping",
-      "career_mapping_desc": "Visualize career paths with interactive mapping"
+      "career_mapping_desc": "Visualize career paths with interactive mapping",
+      "scholarships": "Scholarships",
+      "scholarships_desc": "Browse and apply for education scholarships and financial aid",
+      "colleges": "Government Colleges",
+      "colleges_desc": "Explore government colleges and educational institutions"
     },
     "steps": {
       "complete_profile": "Complete Profile",
@@ -187,3 +193,12 @@
     "feedback_title": "Feedback & Improvements"
   }
 }
+
+
+
+
+
+
+
+
+
