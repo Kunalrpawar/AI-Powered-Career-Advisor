@@ -114,6 +114,12 @@ const Register: React.FC<{ onSwitchToLogin: () => void }> = ({ onSwitchToLogin }
       if (!registrationData.password.trim()) {
         throw new Error('Password is required');
       }
+      const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[\W_]).{8,}$/;
+      if (!passwordRegex.test(registrationData.password)) {
+        throw new Error(
+          'Password must be at least 8 characters long, include one uppercase letter, one lowercase letter, and one special character.'
+        );
+      }
       if (!registrationData.gender) {
         throw new Error('Please select your gender');
       }
@@ -235,15 +241,20 @@ const Register: React.FC<{ onSwitchToLogin: () => void }> = ({ onSwitchToLogin }
                   placeholder="your.email@example.com"
                 />
               </div>
-              <div className="relative">
-                <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
-                <input
-                  type="password"
-                  value={registrationData.password}
-                  onChange={(e) => updateRegistrationData('password', e.target.value)}
-                  className="w-full pl-12 pr-4 py-4 border-2 border-gray-200 rounded-2xl text-lg focus:border-yellow-500 focus:outline-none transition-colors text-gray-900 bg-white placeholder-gray-500"
-                  placeholder="Create a strong password"
-                />
+              <div className="space-y-2">
+                <div className="relative">
+                  <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+                  <input
+                    type="password"
+                    value={registrationData.password}
+                    onChange={(e) => updateRegistrationData('password', e.target.value)}
+                    className="w-full pl-12 pr-4 py-4 border-2 border-gray-200 rounded-2xl text-lg focus:border-yellow-500 focus:outline-none transition-colors text-gray-900 bg-white placeholder-gray-500"
+                    placeholder="Create a strong password"
+                  />
+                </div>
+                <p className="text-sm text-gray-600 px-2">
+                  Password must be at least 8 characters long and include one uppercase letter, one lowercase letter, and one special character.
+                </p>
               </div>
             </div>
           </div>
