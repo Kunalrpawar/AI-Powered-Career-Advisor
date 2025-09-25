@@ -88,7 +88,12 @@ const Register: React.FC<{ onSwitchToLogin: () => void }> = ({ onSwitchToLogin }
   const canProceed = () => {
     switch (currentStep) {
       case 1: return registrationData.name.trim() !== '';
-      case 2: return registrationData.email.trim() !== '' && registrationData.password.trim() !== '';
+      case 2: {
+        const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[\W_]).{8,}$/;
+        return registrationData.email.trim() !== '' && 
+               registrationData.password.trim() !== '' && 
+               passwordRegex.test(registrationData.password);
+      }
       case 3: return registrationData.gender !== '';
       case 4: return registrationData.dreams.trim() !== '';
       case 5: return registrationData.avatar !== '';
@@ -252,9 +257,22 @@ const Register: React.FC<{ onSwitchToLogin: () => void }> = ({ onSwitchToLogin }
                     placeholder="Create a strong password"
                   />
                 </div>
-                <p className="text-sm text-gray-600 px-2">
-                  Password must be at least 8 characters long and include one uppercase letter, one lowercase letter, and one special character.
-                </p>
+                <div className="space-y-1">
+                  <p className="text-sm text-gray-600 px-2">
+                    Password must be at least 8 characters long and include one uppercase letter, one lowercase letter, and one special character.
+                  </p>
+                  {registrationData.password && (
+                    <p className={`text-sm px-2 ${
+                      /^(?=.*[a-z])(?=.*[A-Z])(?=.*[\W_]).{8,}$/.test(registrationData.password)
+                        ? 'text-green-600'
+                        : 'text-red-600'
+                    }`}>
+                      {/^(?=.*[a-z])(?=.*[A-Z])(?=.*[\W_]).{8,}$/.test(registrationData.password)
+                        ? '✓ Password meets requirements'
+                        : '✗ Password does not meet requirements'}
+                    </p>
+                  )}
+                </div>
               </div>
             </div>
           </div>
