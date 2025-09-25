@@ -35,7 +35,8 @@ const Register: React.FC<{ onSwitchToLogin: () => void }> = ({ onSwitchToLogin }
 
   const genderOptions = [
     { id: 'girl', label: 'Girl', emoji: '👧', bgColor: 'bg-pink-100', borderColor: 'border-pink-300' },
-    { id: 'boy', label: 'Boy', emoji: '👦', bgColor: 'bg-blue-100', borderColor: 'border-blue-300' }
+    { id: 'boy', label: 'Boy', emoji: '👦', bgColor: 'bg-blue-100', borderColor: 'border-blue-300' },
+    { id: 'prefer_not_to_say', label: 'Prefer Not to Say', emoji: '😊', bgColor: 'bg-purple-100', borderColor: 'border-purple-300' }
   ];
 
   const avatarOptions = [
@@ -145,7 +146,8 @@ const Register: React.FC<{ onSwitchToLogin: () => void }> = ({ onSwitchToLogin }
       // Map the new form data to the expected backend format
       const genderMapping: { [key: string]: string } = {
         'girl': 'female',
-        'boy': 'male'
+        'boy': 'male',
+        'prefer_not_to_say': 'not_specified'
       };
       
       const registrationPayload = {
@@ -298,18 +300,18 @@ const Register: React.FC<{ onSwitchToLogin: () => void }> = ({ onSwitchToLogin }
               <p className="text-gray-600">Pick the gender you're most comfortable with</p>
               <p className="text-sm text-gray-500">we'll use it for your profile only</p>
             </div>
-            <div className="grid grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {genderOptions.map((option) => (
                 <button
                   key={option.id}
                   onClick={() => updateRegistrationData('gender', option.id)}
-                  className={`p-8 rounded-3xl border-2 transition-all duration-200 hover:scale-105 ${
+                  className={`p-6 rounded-3xl border-2 transition-all duration-200 hover:scale-105 ${
                     registrationData.gender === option.id
                       ? `${option.bgColor} ${option.borderColor} border-4 shadow-lg`
                       : 'bg-white border-gray-200 hover:border-gray-300'
                   }`}
                 >
-                  <div className="text-6xl mb-4">{option.emoji}</div>
+                  <div className="text-5xl mb-3">{option.emoji}</div>
                   <div className="font-semibold text-lg text-gray-900">{option.label}</div>
                 </button>
               ))}
