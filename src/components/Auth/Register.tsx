@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
-import { ChevronLeft, User, Mail, Lock, Heart } from 'lucide-react';
+import { ChevronLeft, User, Mail, Lock, Heart, Eye, EyeOff } from 'lucide-react';
 
 interface RegistrationData {
   name: string;
@@ -29,6 +29,7 @@ const Register: React.FC<{ onSwitchToLogin: () => void }> = ({ onSwitchToLogin }
   const [error, setError] = useState<string | null>(null);
   const [errorDetails, setErrorDetails] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const totalSteps = 7;
 
@@ -250,12 +251,23 @@ const Register: React.FC<{ onSwitchToLogin: () => void }> = ({ onSwitchToLogin }
                 <div className="relative">
                   <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
                   <input
-                    type="password"
+                    type={showPassword ? "text" : "password"}
                     value={registrationData.password}
                     onChange={(e) => updateRegistrationData('password', e.target.value)}
-                    className="w-full pl-12 pr-4 py-4 border-2 border-gray-200 rounded-2xl text-lg focus:border-yellow-500 focus:outline-none transition-colors text-gray-900 bg-white placeholder-gray-500"
+                    className="w-full pl-12 pr-12 py-4 border-2 border-gray-200 rounded-2xl text-lg focus:border-yellow-500 focus:outline-none transition-colors text-gray-900 bg-white placeholder-gray-500"
                     placeholder="Create a strong password"
                   />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 focus:outline-none"
+                  >
+                    {showPassword ? (
+                      <EyeOff className="w-5 h-5" />
+                    ) : (
+                      <Eye className="w-5 h-5" />
+                    )}
+                  </button>
                 </div>
                 <div className="space-y-1">
                   <p className="text-sm text-gray-600 px-2">
