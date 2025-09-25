@@ -4,7 +4,7 @@
  * between meeting participants
  */
 
-const socketIo = require('socket.io');
+import { Server } from 'socket.io';
 
 // Map to store active meetings and their participants
 const meetings = new Map(); // meetingId -> Set of participant socket IDs
@@ -14,8 +14,8 @@ const socketToMeeting = new Map(); // socketId -> meetingId
  * Initialize the signaling server
  * @param {Server} server - HTTP server instance
  */
-function initializeSignalingServer(server) {
-  const io = socketIo(server, {
+export function initializeSignalingServer(server) {
+  const io = new Server(server, {
     cors: {
       origin: '*', // In production, restrict this to your domain
       methods: ['GET', 'POST']
@@ -129,6 +129,4 @@ function initializeSignalingServer(server) {
   return io;
 }
 
-module.exports = {
-  initializeSignalingServer
-};
+// No need for another export here as the function is already exported above

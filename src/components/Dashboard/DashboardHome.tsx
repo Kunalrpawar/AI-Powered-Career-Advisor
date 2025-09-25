@@ -242,7 +242,7 @@ const DashboardHome: React.FC<DashboardHomeProps> = ({ setActiveSection }) => {
         total: statsData.colleges.totalApplied,
         subtitle: `${statsData.colleges.totalApplied} applied`,
         icon: GraduationCap,
-        color: 'green',
+        color: 'orange',
         section: 'colleges'
       });
     }
@@ -502,28 +502,39 @@ const DashboardHome: React.FC<DashboardHomeProps> = ({ setActiveSection }) => {
           
           {/* Additional Quick Actions (5th and 6th cards) */}
           <div className="grid sm:grid-cols-2 gap-4 mt-4">
-            {quickActions.slice(4, 6).map((action, index) => {
-              const Icon = action.icon;
-              const color = action.color;
-              return (
-                <button
-                  key={index + 4}
-                  onClick={action.action}
-                  className="w-full p-4 rounded-xl border-2 border-gray-100 dark:border-gray-700 hover:border-indigo-200 dark:hover:border-indigo-800 hover:bg-indigo-50 dark:hover:bg-gray-700/50 transition-all duration-200 text-left group bg-white dark:bg-gray-800"
-                >
-                  <div className="flex items-start gap-4">
-                    <div className={`w-11 h-11 rounded-xl flex items-center justify-center bg-${color}-50 dark:bg-${color}-900/30 group-hover:scale-105 transition-transform`}>
-                      <Icon className={`w-5 h-5 text-${color}-600 dark:text-${color}-300`} />
-                    </div>
-                    <div className="flex-1">
-                      <h4 className="font-semibold text-gray-900 dark:text-gray-100 mb-1">{action.title}</h4>
-                      <p className="text-sm text-gray-600 dark:text-gray-300">{action.description}</p>
-                    </div>
-                    <ArrowRight className="w-4 h-4 text-gray-400 dark:text-gray-500 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 group-hover:translate-x-1 transition-all" />
-                  </div>
-                </button>
-              );
-            })}
+            {/* Scholarships Card */}
+            <button
+              onClick={() => setActiveSection('scholarships')}
+              className="w-full p-4 rounded-xl border-2 border-gray-100 dark:border-gray-700 hover:border-indigo-200 dark:hover:border-indigo-800 hover:bg-indigo-50 dark:hover:bg-gray-700/50 transition-all duration-200 text-left group bg-white dark:bg-gray-800"
+            >
+              <div className="flex items-start gap-4">
+                <div className="w-11 h-11 rounded-xl flex items-center justify-center bg-pink-50 dark:bg-pink-900/30 group-hover:scale-105 transition-transform">
+                  <GraduationCap className="w-5 h-5 text-pink-600 dark:text-pink-300" />
+                </div>
+                <div className="flex-1">
+                  <h4 className="font-semibold text-gray-900 dark:text-gray-100 mb-1">{t('dashboard.actions.scholarships')}</h4>
+                  <p className="text-sm text-gray-600 dark:text-gray-300">{t('dashboard.actions.scholarships_desc')}</p>
+                </div>
+                <ArrowRight className="w-4 h-4 text-gray-400 dark:text-gray-500 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 group-hover:translate-x-1 transition-all" />
+              </div>
+            </button>
+            
+            {/* Government Colleges Card */}
+            <button
+              onClick={() => setActiveSection('colleges')}
+              className="w-full p-4 rounded-xl border-2 border-gray-100 dark:border-gray-700 hover:border-indigo-200 dark:hover:border-indigo-800 hover:bg-indigo-50 dark:hover:bg-gray-700/50 transition-all duration-200 text-left group bg-white dark:bg-gray-800"
+            >
+              <div className="flex items-start gap-4">
+                <div className="w-11 h-11 rounded-xl flex items-center justify-center bg-teal-50 dark:bg-teal-900/30 group-hover:scale-105 transition-transform">
+                  <School className="w-5 h-5 text-teal-600 dark:text-teal-300" />
+                </div>
+                <div className="flex-1">
+                  <h4 className="font-semibold text-gray-900 dark:text-gray-100 mb-1">{t('dashboard.actions.colleges')}</h4>
+                  <p className="text-sm text-gray-600 dark:text-gray-300">{t('dashboard.actions.colleges_desc')}</p>
+                </div>
+                <ArrowRight className="w-4 h-4 text-gray-400 dark:text-gray-500 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 group-hover:translate-x-1 transition-all" />
+              </div>
+            </button>
           </div>
         </div>
 

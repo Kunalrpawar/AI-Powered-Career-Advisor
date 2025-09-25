@@ -1,5 +1,5 @@
-import React from 'react';
-import { Bell, User, Settings, Search, Sun, Moon } from 'lucide-react';
+import React, { useState, useEffect, useRef } from 'react';
+import { Bell, User, Settings, Search, Sun, Moon, X } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { useTheme } from '../../context/ThemeContext';
 import { useTranslation } from 'react-i18next';
@@ -13,6 +13,76 @@ const Header: React.FC<HeaderProps> = ({ setActiveSection }) => {
   const { user, logout } = useAuth();
   const { theme, toggle } = useTheme();
   const { t } = useTranslation();
+  const [searchQuery, setSearchQuery] = useState('');
+  const [searchResults, setSearchResults] = useState<any[]>([]);
+  const [isSearching, setIsSearching] = useState(false);
+  const [showResults, setShowResults] = useState(false);
+  const searchRef = useRef<HTMLDivElement>(null);
+  
+  // Navigation sections - used for search results
+  const sections = [
+    { id: 'dashboard', name: 'Dashboard', keywords: ['home', 'overview', 'stats', 'dashboard'] },
+    { id: 'skill-gap', name: 'Skill Gap Analysis', keywords: ['skills', 'gap', 'analysis', 'improvement'] },
+    { id: 'career-explorer', name: 'Career Explorer', keywords: ['career', 'path', 'explore', 'future', 'job'] },
+    { id: 'interview', name: 'Interview Preparation', keywords: ['interview', 'prepare', 'questions', 'practice'] },
+    { id: 'job-matcher', name: 'Job Matcher', keywords: ['job', 'search', 'apply', 'match', 'employment'] },
+    { id: 'quiz', name: 'Aptitude Quiz', keywords: ['quiz', 'test', 'aptitude', 'assessment'] },
+    { id: 'project-generator', name: 'Project Generator', keywords: ['project', 'create', 'generate', 'portfolio'] },
+    { id: 'colleges', name: 'Colleges Directory', keywords: ['college', 'university', 'education', 'school'] },
+    { id: 'mentor', name: 'AI Mentor', keywords: ['mentor', 'guidance', 'advice', 'chat', 'ai'] },
+    { id: 'courses', name: 'Course Mapping', keywords: ['course', 'classes', 'learning', 'education'] },
+    { id: 'webrtc', name: 'Video Meetings', keywords: ['video', 'meeting', 'call', 'conference'] },
+    { id: 'profile', name: 'My Profile', keywords: ['profile', 'account', 'settings', 'personal'] },
+  ];
+  
+  // Search function
+  const handleSearch = () => {
+    if (!searchQuery.trim()) {
+      setSearchResults([]);
+      setShowResults(false);
+      return;
+    }
+    
+    setIsSearching(true);
+    
+    // Search through the sections based on keywords and name
+    const query = searchQuery.toLowerCase();
+    const results = sections.filter(section => {
+      return (
+        section.name.toLowerCase().includes(query) || 
+        section.keywords.some(keyword => keyword.includes(query))
+      );
+    });
+    
+    setSearchResults(results);
+    setShowResults(true);
+    setIsSearching(false);
+  };
+  
+  // Handle outside click to close search results
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (searchRef.current && !searchRef.current.contains(event.target as Node)) {
+        setShowResults(false);
+      }
+    };
+    
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+  
+  // Handle search on input change
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (searchQuery) {
+        handleSearch();
+      }
+    }, 300); // Debounce search for better performance
+    
+    return () => clearTimeout(timer);
+  }, [searchQuery]);
   
   // Avatar mapping
   const avatarEmojis: { [key: string]: string } = {
@@ -41,9 +111,70 @@ const Header: React.FC<HeaderProps> = ({ setActiveSection }) => {
       </div>
 
       <div className="flex items-center space-x-2">
-        <div className="hidden md:flex items-center px-3 py-2 rounded-lg bg-gray-50 dark:bg-gray-800 text-gray-500 dark:text-gray-300 focus-within:ring-2 focus-within:ring-indigo-200">
-          <Search className="w-4 h-4 mr-2" />
-          <input className="bg-transparent outline-none text-sm placeholder-gray-400 dark:placeholder-gray-500 w-56" placeholder={t('header.search')} />
+        <div ref={searchRef} className="relative hidden md:block">
+          <div className="flex items-center px-3 py-2 rounded-lg bg-gray-50 dark:bg-gray-800 text-gray-500 dark:text-gray-300 focus-within:ring-2 focus-within:ring-indigo-200">
+            <Search className="w-4 h-4 mr-2" />
+            <input 
+              className="bg-transparent outline-none text-sm placeholder-gray-400 dark:placeholder-gray-500 w-56" 
+              placeholder={t('header.search')}
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              onFocus={() => searchQuery && setShowResults(true)}
+              onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
+            />
+            {searchQuery && (
+              <button 
+                className="ml-1 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200"
+                onClick={() => {
+                  setSearchQuery('');
+                  setSearchResults([]);
+                  setShowResults(false);
+                }}
+              >
+                <X className="w-4 h-4" />
+              </button>
+            )}
+          </div>
+          
+          {/* Search Results Dropdown */}
+          {showResults && searchResults.length > 0 && (
+            <div className="absolute top-full left-0 right-0 mt-2 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 max-h-80 overflow-y-auto z-50">
+              <div className="p-2 text-xs text-gray-500 dark:text-gray-400 border-b border-gray-200 dark:border-gray-700">
+                {searchResults.length} results found
+              </div>
+              <div>
+                {searchResults.map((result) => (
+                  <button
+                    key={result.id}
+                    className="w-full px-4 py-3 text-left hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors flex items-center"
+                    onClick={() => {
+                      setActiveSection(result.id);
+                      setShowResults(false);
+                      setSearchQuery('');
+                    }}
+                  >
+                    <div>
+                      <div className="font-medium text-gray-800 dark:text-gray-200">{result.name}</div>
+                      <div className="text-xs text-gray-500 dark:text-gray-400">
+                        {result.keywords.slice(0, 3).join(', ')}
+                      </div>
+                    </div>
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+          
+          {/* No Results State */}
+          {showResults && searchQuery && searchResults.length === 0 && !isSearching && (
+            <div className="absolute top-full left-0 right-0 mt-2 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 p-6 text-center z-50">
+              <Search className="w-8 h-8 text-gray-400 mx-auto mb-2" />
+              <p className="text-gray-800 dark:text-gray-200 font-medium">No results found</p>
+              <p className="text-gray-500 dark:text-gray-400 text-sm mt-1">
+                Try searching for different keywords
+              </p>
+            </div>
+          )}
         </div>
        
         <LanguageSwitcher />

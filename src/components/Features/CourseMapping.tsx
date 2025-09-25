@@ -3249,12 +3249,8 @@ const CourseMapping: React.FC = () => {
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
   const [expandedNodes, setExpandedNodes] = useState<Set<string>>(new Set([
-    'science', 'engineering', 'cs', 'software-dev', 'frontend-dev', // Science path
-    'commerce', 'finance', 'ca', 'tax-specialist', 'direct-tax', 'income-tax-specialist', // Commerce path
-    'arts', 'law', 'corporate-law', 'commercial-litigation', 'corporate-lawyer', // Arts path
-    'vocational', 'technical-trades', 'electrical-trades', 'industrial-electrician', 'power-plant-electrician', // Vocational path
-    'diploma', 'engineering-diploma', 'cs-diploma', 'software-dev-diploma', 'web-dev-diploma' // Diploma path
-  ])); // Show 7-level hierarchy examples for all streams
+    'career-hub' // Only expand the root node
+  ])); // Start with only root node expanded
   const [selectedNodeData, setSelectedNodeData] = useState<any>(null);
   const [modalOpen, setModalOpen] = useState(false);
   const [currentPath, setCurrentPath] = useState<string[]>([]);
