@@ -48,7 +48,13 @@ const Register: React.FC<{ onSwitchToLogin: () => void }> = ({ onSwitchToLogin }
     { id: 'avatar6', emoji: '👩‍💼', bgColor: 'bg-pink-100' },
     { id: 'avatar7', emoji: '👨‍🏫', bgColor: 'bg-yellow-100' },
     { id: 'avatar8', emoji: '👩‍🎤', bgColor: 'bg-green-100' },
-    { id: 'avatar9', emoji: '👨‍🚀', bgColor: 'bg-indigo-100' }
+    { id: 'avatar9', emoji: '👨‍🚀', bgColor: 'bg-indigo-100' },
+    { id: 'avatar10', emoji: '👨‍✈️', bgColor: 'bg-blue-100' }, // Pilot
+    { id: 'avatar11', emoji: '💂‍♂️', bgColor: 'bg-green-100' }, // Guard/Soldier
+    { id: 'avatar12', emoji: '👮‍♂️', bgColor: 'bg-blue-100' }, // Police/Military Officer
+    { id: 'avatar13', emoji: '👨‍🏭', bgColor: 'bg-gray-100' }, // Industrial Worker
+    { id: 'avatar14', emoji: '👨‍🌾', bgColor: 'bg-green-100' }, // Farmer
+    { id: 'avatar15', emoji: '👩‍✈️', bgColor: 'bg-blue-100' }  // Female Pilot
   ];
 
   const gradeOptions = [
@@ -346,18 +352,18 @@ const Register: React.FC<{ onSwitchToLogin: () => void }> = ({ onSwitchToLogin }
               <h2 className="text-3xl font-bold text-gray-900">Pick Your Avatar</h2>
               <p className="text-gray-600">Choose a fun character and make your dashboard feel truly yours.</p>
             </div>
-            <div className="grid grid-cols-3 gap-4">
+            <div className="grid grid-cols-3 md:grid-cols-5 gap-3">
               {avatarOptions.map((avatar) => (
                 <button
                   key={avatar.id}
                   onClick={() => updateRegistrationData('avatar', avatar.id)}
-                  className={`p-6 rounded-3xl border-2 transition-all duration-200 hover:scale-105 ${
+                  className={`p-4 rounded-2xl border-2 transition-all duration-200 hover:scale-105 ${
                     registrationData.avatar === avatar.id
                       ? `${avatar.bgColor} border-yellow-400 border-4 shadow-lg`
                       : 'bg-white border-gray-200 hover:border-gray-300'
                   }`}
                 >
-                  <div className="text-4xl">{avatar.emoji}</div>
+                  <div className="text-3xl sm:text-4xl">{avatar.emoji}</div>
                 </button>
               ))}
             </div>
