@@ -24,12 +24,6 @@ const Login: React.FC<{ onSwitchToRegister: () => void }> = ({ onSwitchToRegiste
       if (!password.trim()) {
         throw new Error('Password is required');
       }
-      const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[\W_]).{8,}$/;
-      if (!passwordRegex.test(password)) {
-        throw new Error(
-          'Password must be at least 8 characters long, include one uppercase letter, one lowercase letter, and one special character.'
-        );
-      }
       
       console.log('Attempting login with:', email);
       await login(email.trim().toLowerCase(), password);

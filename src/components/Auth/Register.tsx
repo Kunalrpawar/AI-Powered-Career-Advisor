@@ -35,8 +35,7 @@ const Register: React.FC<{ onSwitchToLogin: () => void }> = ({ onSwitchToLogin }
 
   const genderOptions = [
     { id: 'girl', label: 'Girl', emoji: '👧', bgColor: 'bg-pink-100', borderColor: 'border-pink-300' },
-    { id: 'boy', label: 'Boy', emoji: '👦', bgColor: 'bg-blue-100', borderColor: 'border-blue-300' },
-    { id: 'prefer_not_to_say', label: 'Prefer Not to Say', emoji: '😊', bgColor: 'bg-purple-100', borderColor: 'border-purple-300' }
+    { id: 'boy', label: 'Boy', emoji: '👦', bgColor: 'bg-blue-100', borderColor: 'border-blue-300' }
   ];
 
   const avatarOptions = [
@@ -91,10 +90,8 @@ const Register: React.FC<{ onSwitchToLogin: () => void }> = ({ onSwitchToLogin }
     switch (currentStep) {
       case 1: return registrationData.name.trim() !== '';
       case 2: {
-        const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[\W_]).{8,}$/;
         return registrationData.email.trim() !== '' && 
-               registrationData.password.trim() !== '' && 
-               passwordRegex.test(registrationData.password);
+               registrationData.password.trim() !== '';
       }
       case 3: return registrationData.gender !== '';
       case 4: return registrationData.dreams.trim() !== '';
@@ -121,12 +118,6 @@ const Register: React.FC<{ onSwitchToLogin: () => void }> = ({ onSwitchToLogin }
       if (!registrationData.password.trim()) {
         throw new Error('Password is required');
       }
-      const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[\W_]).{8,}$/;
-      if (!passwordRegex.test(registrationData.password)) {
-        throw new Error(
-          'Password must be at least 8 characters long, include one uppercase letter, one lowercase letter, and one special character.'
-        );
-      }
       if (!registrationData.gender) {
         throw new Error('Please select your gender');
       }
@@ -146,8 +137,7 @@ const Register: React.FC<{ onSwitchToLogin: () => void }> = ({ onSwitchToLogin }
       // Map the new form data to the expected backend format
       const genderMapping: { [key: string]: string } = {
         'girl': 'female',
-        'boy': 'male',
-        'prefer_not_to_say': 'not_specified'
+        'boy': 'male'
       };
       
       const registrationPayload = {
@@ -257,7 +247,7 @@ const Register: React.FC<{ onSwitchToLogin: () => void }> = ({ onSwitchToLogin }
                     value={registrationData.password}
                     onChange={(e) => updateRegistrationData('password', e.target.value)}
                     className="w-full pl-12 pr-12 py-4 border-2 border-gray-200 rounded-2xl text-lg focus:border-yellow-500 focus:outline-none transition-colors text-gray-900 bg-white placeholder-gray-500"
-                    placeholder="Create a strong password"
+                    placeholder="Create a password"
                   />
                   <button
                     type="button"
@@ -272,20 +262,7 @@ const Register: React.FC<{ onSwitchToLogin: () => void }> = ({ onSwitchToLogin }
                   </button>
                 </div>
                 <div className="space-y-1">
-                  <p className="text-sm text-gray-600 px-2">
-                    Password must be at least 8 characters long and include one uppercase letter, one lowercase letter, and one special character.
-                  </p>
-                  {registrationData.password && (
-                    <p className={`text-sm px-2 ${
-                      /^(?=.*[a-z])(?=.*[A-Z])(?=.*[\W_]).{8,}$/.test(registrationData.password)
-                        ? 'text-green-600'
-                        : 'text-red-600'
-                    }`}>
-                      {/^(?=.*[a-z])(?=.*[A-Z])(?=.*[\W_]).{8,}$/.test(registrationData.password)
-                        ? '✓ Password meets requirements'
-                        : '✗ Password does not meet requirements'}
-                    </p>
-                  )}
+                  {/* Password requirements removed */}
                 </div>
               </div>
             </div>
@@ -300,7 +277,7 @@ const Register: React.FC<{ onSwitchToLogin: () => void }> = ({ onSwitchToLogin }
               <p className="text-gray-600">Pick the gender you're most comfortable with</p>
               <p className="text-sm text-gray-500">we'll use it for your profile only</p>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {genderOptions.map((option) => (
                 <button
                   key={option.id}
