@@ -1,6 +1,7 @@
 # AI Career Advisor
 
 An AI-powered career guidance platform using Google's Gemini AI to help users explore careers, match with jobs, and generate personalized learning paths.
+This will help students and graduates to find there right carrer path
 
 ## Features
 
@@ -67,4 +68,5 @@ Deployment: Vercel, Docker
 
 English, Hindi, Urdu, Kashmiri, Dogri
 
-## Send a PR to collab
+
+Send a PR to collab
