@@ -67,6 +67,4 @@ Deployment: Vercel, Docker
 
 English, Hindi, Urdu, Kashmiri, Dogri
 
-## License
-
-MIT License
+## Send a PR to collab
